@@ -17,29 +17,22 @@ class Maze():
         width = bounds_x[1]//cell_size + bounds_x[1]//cell_size%2
         height = bounds_y[1]//cell_size + bounds_y[1]//cell_size%2
 
-        self.bounds_x, self.bounds_y = (
-            (-width, width),
-            (-height, height)
-        )
-        x_range = -width +1, width
-        y_range = -height +1, height
+        self.x_range = -width + 1, width
+        self.y_range = -height + 1, height
 
         self.nodes = {
-            x : { y : False for y in range(*y_range)}
-            for x in range(*x_range)
+            x : { y : False for y in range(*self.y_range)}
+            for x in range(*self.x_range)
         } 
-        
-        print(x_range)
-        print(y_range)
 
         self.create_maze(0,0)
         
-        for x in range(*x_range):
-            for y in range(*y_range):
+        for x in range(*self.x_range):
+            for y in range(*self.y_range):
                 if not self.nodes[x][y]:
                     self.maze.add_obstacle(
-                        (x*cell_size-offset,y*cell_size-offset),
-                        ((x+1)*cell_size-offset,(y+1)*cell_size-offset)
+                        (x*cell_size - offset, y*cell_size - offset),
+                        ((x + 1)*cell_size - offset, (y + 1)*cell_size - offset)
                     )
 
 
@@ -47,6 +40,18 @@ class Maze():
         return self.maze
 
 
+    def carve_exits(self):
+        x1 = random.randint(self.x_range[0],self.x_range[1]-1)
+        x2 = random.randint(self.x_range[0],self.x_range[1]-1)
+        y1 = random.randint(self.y_range[0],self.y_range[1]-1)
+        y2 = random.randint(self.y_range[0],self.y_range[1]-1)
+    
+        self.carve_passage(x1, self.y_range[0],  x1, self.y_range[0]+2)
+        self.carve_passage(x2, self.y_range[1]-1,  x2, self.y_range[1]-3)
+        self.carve_passage(self.x_range[0], y1, self.x_range[0]+2, y1)
+        self.carve_passage(self.x_range[1]-1, y2, self.x_range[1]-3, y2)
+
+        
     def carve_passage(self, x1,y1,x2,y2):
         if y1 == y2:
             for x in range(x1, x2, -1 if x1 > x2 else 1):
@@ -69,8 +74,8 @@ class Maze():
                 new_y = y + direction[1]*2
 
                 if  (
-                    new_x not in range(self.bounds_x[0]+1,self.bounds_x[1]) 
-                    or new_y not in range(self.bounds_y[0]+1,self.bounds_y[1])
+                    new_x not in range(*self.x_range) 
+                    or new_y not in range(*self.y_range)
                 ):
                     continue
                 if self.nodes[new_x][new_y]:
@@ -89,6 +94,7 @@ class Maze():
                     x,y = new_x, new_y
                     continue
                 break
+        self.carve_exits()
 
 
     """
