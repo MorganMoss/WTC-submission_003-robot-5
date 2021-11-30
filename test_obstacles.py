@@ -1,5 +1,4 @@
-from obstacles.obstacles import *
-import obstacles as obstacles
+from maze.obstacles import *
 import unittest
 import random
 
@@ -34,9 +33,9 @@ class TestObstacles(unittest.TestCase):
         ob1 = Obstacle((0,0))
         ob2 = Obstacle((5,2))
         ob3 = Obstacle((-15,-3))
-        obs.add_obstacle(ob1)
-        obs.add_obstacle(ob2)
-        obs.add_obstacle(ob2)
+        obs.add_obstacle(obstacle=ob1)
+        obs.add_obstacle(obstacle=ob2)
+        obs.add_obstacle(obstacle=ob2)
         obs.add_obstacle((2,4))
 
         self.assertEqual(len(obs.obstacles), 4)
@@ -78,19 +77,19 @@ class TestObstacles(unittest.TestCase):
         self.obs = Obstacles()
         self.obs.add_obstacle((1,1))
 
-        self.assertTrue(self.obs.is_position_blocked((1,1)))
-        self.assertTrue(self.obs.is_position_blocked((5,5)))
-        self.assertTrue(self.obs.is_position_blocked((1,5)))
-        self.assertTrue(self.obs.is_position_blocked((5,1)))
+        self.assertTrue(self.obs.is_position_blocked(*(1,1)))
+        self.assertTrue(self.obs.is_position_blocked(*(5,5)))
+        self.assertTrue(self.obs.is_position_blocked(*(1,5)))
+        self.assertTrue(self.obs.is_position_blocked(*(5,1)))
 
-        self.assertFalse(self.obs.is_position_blocked((0,1)))
-        self.assertFalse(self.obs.is_position_blocked((1,0)))
-        self.assertFalse(self.obs.is_position_blocked((5,0)))
-        self.assertFalse(self.obs.is_position_blocked((0,5)))
-        self.assertFalse(self.obs.is_position_blocked((6,6)))
-        self.assertFalse(self.obs.is_position_blocked((0,0)))
-        self.assertFalse(self.obs.is_position_blocked((0,6)))
-        self.assertFalse(self.obs.is_position_blocked((6,0)))
+        self.assertFalse(self.obs.is_position_blocked(*(0,1)))
+        self.assertFalse(self.obs.is_position_blocked(*(1,0)))
+        self.assertFalse(self.obs.is_position_blocked(*(5,0)))
+        self.assertFalse(self.obs.is_position_blocked(*(0,5)))
+        self.assertFalse(self.obs.is_position_blocked(*(6,6)))
+        self.assertFalse(self.obs.is_position_blocked(*(0,0)))
+        self.assertFalse(self.obs.is_position_blocked(*(0,6)))
+        self.assertFalse(self.obs.is_position_blocked(*(6,0)))
 
         self.obs = Obstacles()
         
@@ -100,44 +99,46 @@ class TestObstacles(unittest.TestCase):
         
         self.obs.add_obstacle((0,10))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (0,20)))
+            self.obs.is_path_blocked(*(0,0), *(0,20)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (0,9)))
+            self.obs.is_path_blocked(*(0,0), *(0,9)))
         self.obs = Obstacles()
 
         self.obs.add_obstacle((0,-10))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (0,-20)))
+            self.obs.is_path_blocked(*(0,0), *(0,-20)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (0,-5)))
+            self.obs.is_path_blocked(*(0,0), *(0,-5)))
         self.obs = Obstacles()
 
         self.obs.add_obstacle((10,0))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (20,0)))
+            self.obs.is_path_blocked(*(0,0), *(20,0)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (9,0)))
+            self.obs.is_path_blocked(*(0,0), *(9,0)))
         self.obs = Obstacles()
 
         self.obs.add_obstacle((-10,0))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (-20,0)))
+            self.obs.is_path_blocked(*(0,0), *(-20,0)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (-5,0)))
+            self.obs.is_path_blocked(*(0,0), *(-5,0)))
         self.obs = Obstacles()
 
         self.obs.add_obstacle((10,10))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (20,20)))
+            self.obs.is_path_blocked(*(0,0), *(20,20)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (9,9)))
+            self.obs.is_path_blocked(*(0,0), *(9,9)))
         self.obs = Obstacles()
 
         self.obs.add_obstacle((-10,-10))
         self.assertTrue(
-            self.obs.is_path_blocked((0,0), (-20,-20)))
+            self.obs.is_path_blocked(*(0,0), *(-20,-20)))
         self.assertFalse(
-            self.obs.is_path_blocked((0,0), (-5,-5)))
+            self.obs.is_path_blocked(*(0,0), *(-5,-5)))
         self.obs = Obstacles()
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from obstacles.obstacles import Obstacles
+from maze.obstacles import Obstacles
 from world.text.world import World
 from world.turtle.world import TurtleWorld
 from toy_robot.robot_toy import ToyRobot

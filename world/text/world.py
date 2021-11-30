@@ -1,5 +1,5 @@
 from toy_robot.robot_base import BaseRobot
-from obstacles.obstacles import Obstacles
+from maze.obstacles import Obstacles
 import math
 
 
@@ -10,7 +10,8 @@ class World():
 
     def __init__(
         self, bounds_x:tuple = (-100,100), 
-              bounds_y:tuple = (-200,200)) -> None:
+              bounds_y:tuple = (-200,200),
+              cell_size:int = 8) -> None:
         """
         Constructor for World.
 
@@ -19,12 +20,21 @@ class World():
              Horizontal boundary. Defaults to (-100,100).
             bounds_y (tuple[int,int], optional):
              Vertical boundary. Defaults to (-200,200).
+            cell_size (int, optional): Here for turtle world to function
         """
         self.bounds_x = bounds_x
         self.bounds_y = bounds_y
         self.robot_pos = dict()
         self.robot_direction = dict()
         self.obstacles = Obstacles()
+        self.cell_size = cell_size
+
+
+    def draw_obstacles(self) -> None:
+        """
+        Does nothing, is place holder for turtle world
+        """
+        ...
 
 
     def get_obstacles(self) -> list:
@@ -57,6 +67,7 @@ class World():
             direction (float, optional):
             The direction the robot faces initially. Defaults to 0.
         """
+        
         self.robot_pos[robot.name] = start_pos
         self.robot_direction[robot.name] = direction
 
@@ -146,7 +157,7 @@ class World():
             )
             return False
 
-        if self.obstacles.is_path_blocked(self.robot_pos[robot.name], destination):
+        if self.obstacles.is_path_blocked(*self.robot_pos[robot.name], *destination):
             robot.robot_say_message(
                 "Sorry, there is an obstacle in the way.",
                 f"{robot.name}: "

@@ -1,14 +1,18 @@
 import sys
 from toy_robot.robot_toy import ToyRobot, CommandHandler, Commands
-
 from world.text.world import World
+from maze.empty_maze import Maze
 
-if len(sys.argv) > 1:
-    if sys.argv[1].lower() == 'turtle':
-        from world.turtle.world import TurtleWorld as World
-    elif sys.argv[1].lower() == 'text':
-        # from world.text.world import World
-        ...
+sys.argv = list(map(lambda w : w.lower(), sys.argv))
+if 'turtle' in sys.argv:
+    from world.turtle.world import TurtleWorld as World
+
+if "maze" in sys.argv:
+    from maze.moss_maze import Maze
+
+from world.turtle.world import TurtleWorld as World
+from maze.moss_maze import Maze
+
 
 
 def robot_start() -> None:
@@ -20,11 +24,23 @@ def robot_start() -> None:
     toy_robot = ToyRobot()
     toy_robot.start()
     
-    world = World()
-    world.add_robot(toy_robot.robot)
-    world.generate_obstacles()
+    cell_size = 4
+    num = list(filter(lambda arg: arg.isnumeric(), sys.argv))
+    if len(num)>0:
+        cell_size = int(num[0])
     
-    commands.exec_command(world, toy_robot.robot, ["OBSTACLES"], '')
+    scale = 1
+    bounds_x = (-100*scale, 100*scale)
+    bounds_y = (-200*scale, 200*scale)
+
+
+    world = World(bounds_x, bounds_y, cell_size)
+    maze = Maze(bounds_x, bounds_y, cell_size)
+    world.obstacles = maze.get_maze()
+    world.draw_obstacles()
+    world.add_robot(toy_robot.robot, (0,0))
+    if len(sys.argv) == 1:
+        commands.exec_command(world, toy_robot.robot, ["OBSTACLES"], '')
 
     while True:
         try:
