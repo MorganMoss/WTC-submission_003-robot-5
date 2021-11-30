@@ -59,14 +59,20 @@ class Obstacles():
         return "\n".join(map(str, self.obstacles))
 
     
-    def add_obstacle(self, pos:tuple = None, end_pos:tuple = None, obstacle:Obstacle = None) -> None:
+    def add_obstacle(
+        self, pos:tuple = None, end_pos:tuple = None, 
+        obstacle:Obstacle = None
+    ) -> None:
         """
         Adds an obstacle via given object or by set of co-ords
 
         Args:
-            pos (tuple[int,int], optional): Add obstacle via co-ords. Defaults to None.
-            end_pos (tuple[int,int], optional): End co-ords for obstacle. Defaults to None.
-            obstacle (Obstacle, optional): Add already created obstacle. Defaults to None.
+            pos (tuple[int,int], optional): Add obstacle via co-ords. 
+            Defaults to None.
+            end_pos (tuple[int,int], optional): End co-ords for obstacle.
+            Defaults to None.
+            obstacle (Obstacle, optional): Add already created obstacle. 
+            Defaults to None.
         """
         if pos != None:
             self.obstacles.add(Obstacle(pos, end_pos))
@@ -75,7 +81,8 @@ class Obstacles():
 
 
     def generate_obstacles(
-        self, bounds_x:tuple, bounds_y:tuple) -> None:
+        self, bounds_x:tuple, bounds_y:tuple
+    ) -> None:
         """
         Generates up to 10 obstacles in random places within bounds
 
@@ -88,7 +95,8 @@ class Obstacles():
 
 
     def add_random_obstacle(
-        self, bounds_x:tuple, bounds_y:tuple) -> None:
+        self, bounds_x:tuple, bounds_y:tuple
+    ) -> None:
         """
         Creates a randomly placed obstacle and adds it to obstacles 
 
@@ -132,8 +140,10 @@ class Obstacles():
         , self.obstacles))) > 0
 
     
-    def is_path_blocked(
-        self, x1:int, y1:int, x2:int, y2:int) -> bool:
+    def is_path_blocked(self, 
+        x1:int, y1:int,
+        x2:int, y2:int
+    ) -> bool:
         """
         Checks if there is an obstacle between the robot and it's destination.
 

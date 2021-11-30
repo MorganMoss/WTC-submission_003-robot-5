@@ -27,7 +27,9 @@ class TurtleWorld(World):
              Vertical boundary. Defaults to (-200,200).
             cell_size (int): the size of the obstacles in this world
         """
-        super().__init__(bounds_x=bounds_x, bounds_y=bounds_y, cell_size=cell_size)
+        super().__init__(
+            bounds_x=bounds_x, bounds_y=bounds_y, cell_size=cell_size
+        )
     
         turtle.hideturtle()
 
@@ -35,9 +37,14 @@ class TurtleWorld(World):
         if cell_size > 10:
             self.scale = 16
         self.screen = turtle.getscreen()
-        self.screen.screensize((bounds_x[1]-bounds_x[0])*self.scale/cell_size+1, (bounds_y[1]-bounds_y[0])*self.scale/cell_size+cell_size*2)
+        self.screen.screensize(
+            (bounds_x[1]-bounds_x[0])*self.scale/cell_size+1,
+            (bounds_y[1]-bounds_y[0])*self.scale/cell_size+cell_size*2
+        )
+
         self.screen.xscale=self.scale/cell_size
         self.screen.yscale=self.scale/cell_size
+        
         self.screen.bgcolor("black")
 
         turtle.pencolor("red")

@@ -10,8 +10,8 @@ if 'turtle' in sys.argv:
 if "maze" in sys.argv:
     from maze.moss_maze import Maze
 
-from world.turtle.world import TurtleWorld as World
-from maze.moss_maze import Maze
+# from world.turtle.world import TurtleWorld as World
+# from maze.moss_maze import Maze
 
 
 
@@ -25,6 +25,7 @@ def robot_start() -> None:
     toy_robot.start()
     
     cell_size = 4
+
     num = list(filter(lambda arg: arg.isnumeric(), sys.argv))
     if len(num)>0:
         cell_size = int(num[0])
@@ -34,13 +35,13 @@ def robot_start() -> None:
     bounds_y = (-200*scale, 200*scale)
 
 
-    world = World(bounds_x, bounds_y, cell_size)
     maze = Maze(bounds_x, bounds_y, cell_size)
+    world = World(bounds_x, bounds_y, cell_size)
+    
     world.obstacles = maze.get_maze()
     world.draw_obstacles()
     world.add_robot(toy_robot.robot, (0,0))
-    if len(sys.argv) == 1:
-        commands.exec_command(world, toy_robot.robot, ["OBSTACLES"], '')
+    commands.exec_command(world, toy_robot.robot, ["OBSTACLES"], '')
 
     while True:
         try:

@@ -40,7 +40,7 @@ class Maze():
         return self.maze
 
 
-    def carve_exits(self):
+    def carve_exits(self) -> None:
         x1 = random.randint(self.x_range[0],self.x_range[1]-1)
         x2 = random.randint(self.x_range[0],self.x_range[1]-1)
         y1 = random.randint(self.y_range[0],self.y_range[1]-1)
@@ -52,7 +52,7 @@ class Maze():
         self.carve_passage(self.x_range[1]-1, y2, self.x_range[1]-3, y2)
 
         
-    def carve_passage(self, x1,y1,x2,y2):
+    def carve_passage(self, x1,y1,x2,y2) -> None:
         if y1 == y2:
             for x in range(x1, x2, -1 if x1 > x2 else 1):
                 for y in range(y1, y1+1):
@@ -63,9 +63,10 @@ class Maze():
                     self.nodes[x][y] = True
 
 
-    def create_maze(self, x, y):
-        while True: #While loop was less restrictive.
+    def create_maze(self, x, y) -> None:
+        while True:
             self.path.append((x,y))
+
             unmarked_found = False
             directions = [(1,0),(-1,0),(0,1),(0,-1)]
             while directions != list():
@@ -73,7 +74,7 @@ class Maze():
                 new_x = x + direction[0]*2
                 new_y = y + direction[1]*2
 
-                if  (
+                if (
                     new_x not in range(*self.x_range) 
                     or new_y not in range(*self.y_range)
                 ):
@@ -94,39 +95,5 @@ class Maze():
                     x,y = new_x, new_y
                     continue
                 break
+            
         self.carve_exits()
-
-
-    """
-    def create_maze(self, x, y):
-        self.path.append((x,y))
-        unmarked_found = False
-        directions = [(1,0),(-1,0),(0,1),(0,-1)]
-        while directions != list():
-            direction = directions.pop(random.randint(0, len(directions)-1))
-            new_x = x + direction[0]*self.cell_size*2
-            new_y = y + direction[1]*self.cell_size*2
-            width_low = 1
-            width_high = 1
-
-            if  (
-                new_x not in range(self.bounds_x[0]+width_low,self.bounds_x[1]-width_high) 
-                or new_y not in range(self.bounds_y[0]+width_low,self.bounds_y[1]-width_high)
-            ):
-                continue
-            if self.nodes[new_x][new_y]:
-                continue
-            unmarked_found = True
-            break
-        
-        if unmarked_found:
-            self.carve_passage(x,y,new_x, new_y)
-            self.create_maze(new_x, new_y)
-        else:
-            self.nodes[x][y] = True
-            current_node = self.path.index((x,y)) 
-            if current_node > 0:
-                new_x, new_y = self.path[current_node-1]
-                self.create_maze(new_x, new_y)
-    #Recursion isn't as fast, and can go to less extreme values
-    """

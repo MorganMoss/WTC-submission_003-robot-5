@@ -39,8 +39,8 @@ class BaseRobot():
             position (tuple, optional): Starting position. Defaults to (0,0).
             rotation (int, optional): Starting direction. Defaults to 0.
         """
-        self.bounds:tuple = ((-100, 100), (-200, 200))
-        self.position:tuple = (0,0)
-        self.rotation:int = 0
+        # self.bounds:tuple = ((-100, 100), (-200, 200))
+        # self.position:tuple = (0,0)
+        # self.rotation:int = 0
         self.name:str = ''
         self.messages_enabled:bool = True
