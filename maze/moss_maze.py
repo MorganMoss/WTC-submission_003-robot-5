@@ -1,4 +1,4 @@
-from .obstacles import *
+from .obstacles import Obstacles
 import random
 
 class Maze():

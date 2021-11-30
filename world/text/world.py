@@ -9,24 +9,27 @@ class World():
     """
 
     def __init__(
-        self, bounds_x:tuple = (-100,100), 
-              bounds_y:tuple = (-200,200),
-              cell_size:int = 8) -> None:
+        self, maze: type,
+        bounds_x:tuple = (-100,100), 
+        bounds_y:tuple = (-200,200),
+        cell_size:int = 8
+        ) -> None:
         """
         Constructor for World.
 
         Args:
+            maze (type): a Maze generator that returns a list of obstacles
             bounds_x (tuple[int,int], optional):
              Horizontal boundary. Defaults to (-100,100).
             bounds_y (tuple[int,int], optional):
              Vertical boundary. Defaults to (-200,200).
             cell_size (int, optional): Here for turtle world to function
         """
+        self.obstacles = maze(bounds_x, bounds_y, cell_size).get_maze()
         self.bounds_x = bounds_x
         self.bounds_y = bounds_y
         self.robot_pos = dict()
         self.robot_direction = dict()
-        self.obstacles = Obstacles()
         self.cell_size = cell_size
 
 

@@ -13,9 +13,10 @@ class TurtleWorld(World):
     
 
     def __init__(
-        self, bounds_x:tuple=(-100,100),
-              bounds_y:tuple=(-200,200),
-              cell_size:int = 4) -> None:
+        self, maze:type,
+        bounds_x:tuple=(-100,100),
+        bounds_y:tuple=(-200,200),
+        cell_size:int = 4) -> None:
         """
         Constructor for TurtleWorld. Initializes the inherited TextWorld,
         and then sets up turtle graphics for startup.
@@ -28,7 +29,7 @@ class TurtleWorld(World):
             cell_size (int): the size of the obstacles in this world
         """
         super().__init__(
-            bounds_x=bounds_x, bounds_y=bounds_y, cell_size=cell_size
+            maze, bounds_x, bounds_y, cell_size
         )
     
         turtle.hideturtle()
@@ -36,6 +37,7 @@ class TurtleWorld(World):
         self.scale = 8
         if cell_size > 10:
             self.scale = 16
+
         self.screen = turtle.getscreen()
         self.screen.screensize(
             (bounds_x[1]-bounds_x[0])*self.scale/cell_size+1,
@@ -51,6 +53,7 @@ class TurtleWorld(World):
         turtle.fillcolor("orange")
         turtle.speed(0)
         self.draw_box(*bounds_x,*bounds_y)
+        self.draw_obstacles()
         self.robot_turtles = dict()
 
 
