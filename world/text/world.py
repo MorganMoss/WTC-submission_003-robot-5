@@ -1,6 +1,6 @@
-from toy_robot.robot_base import BaseRobot
 from maze.obstacles import Obstacles
 import math
+from toy_robot import ToyRobot
 
 
 class World():
@@ -25,7 +25,9 @@ class World():
              Vertical boundary. Defaults to (-200,200).
             cell_size (int, optional): Here for turtle world to function
         """
-        self.obstacles = maze(bounds_x, bounds_y, cell_size).get_maze()
+        self.obstacles = maze(
+            bounds_x, bounds_y, cell_size
+        ).generate_obstacles()
         self.bounds_x = bounds_x
         self.bounds_y = bounds_y
         self.robot_pos = dict()
@@ -58,13 +60,13 @@ class World():
 
 
     def add_robot(
-        self, robot:BaseRobot, start_pos:tuple = (0,0),
+        self, robot:ToyRobot, start_pos:tuple = (0,0),
         direction:float = 0 ) -> None:
         """
         Adds a robot to this world
 
         Args:
-            robot (BaseRobot): The robot to be added
+            robot (ToyRobot): The robot to be added
             start_pos (tuple[int,int], optional): 
             Starting position of the robot. Defaults to (0,0).
             direction (float, optional):
@@ -75,12 +77,12 @@ class World():
         self.robot_direction[robot.name] = direction
 
 
-    def rotate_robot(self, robot:BaseRobot, angle:float) -> None:
+    def rotate_robot(self, robot:ToyRobot, angle:float) -> None:
         """
         Rotates robot.
 
         Args:
-            robot (BaseRobot): The robot to be rotated.
+            robot (ToyRobot): The robot to be rotated.
             angle (float): The degrees by which it rotates.
         """
         direction =  'right' if angle > 0 else 'left'
@@ -97,12 +99,12 @@ class World():
 
 
 
-    def get_destination(self, robot:BaseRobot, steps:int) -> tuple:
+    def get_destination(self, robot:ToyRobot, steps:int) -> tuple:
         """
         Gets the resultant position of the robot.
 
         Args:
-            robot (BaseRobot): The robot to be moved.
+            robot (ToyRobot): The robot to be moved.
             steps (int): The distance the robot moves.
 
         Returns:
@@ -134,11 +136,11 @@ class World():
                 and (self.bounds_y[0] <= destination[1] <= self.bounds_y[1])
 
 
-    def move_robot(self, robot:BaseRobot, steps:int) -> bool:
+    def move_robot(self, robot:ToyRobot, steps:int) -> bool:
         """AI is creating summary for move_robot
 
         Args:
-            robot (BaseRobot): The robot to be moved.
+            robot (ToyRobot): The robot to be moved.
             steps (int): The distance the robot moves
 
         Returns:
@@ -177,11 +179,11 @@ class World():
         return True
         
     
-    def get_position(self, robot:BaseRobot) -> None:
+    def get_position(self, robot:ToyRobot) -> None:
         """
         Makes robot send a message displaying its current position.
         Args:
-            robot (BaseRobot): The robot to display its position.
+            robot (ToyRobot): The robot to display its position.
         """
         robot.robot_say_message(
             f"now at position {str(self.robot_pos[robot.name]).replace(' ', '')}.",

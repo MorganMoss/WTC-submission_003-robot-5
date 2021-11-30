@@ -25,7 +25,7 @@ class TestObstacle(unittest.TestCase):
 class TestObstacles(unittest.TestCase):
     def test_constructor(self):
         obs = Obstacles()
-        self.assertEqual(obs.obstacles, [])
+        self.assertEqual(obs.obstacles, set())
 
 
     def test_add_obstacle(self):
@@ -35,7 +35,7 @@ class TestObstacles(unittest.TestCase):
         ob3 = Obstacle((-15,-3))
         obs.add_obstacle(obstacle=ob1)
         obs.add_obstacle(obstacle=ob2)
-        obs.add_obstacle(obstacle=ob2)
+        obs.add_obstacle(obstacle=ob3)
         obs.add_obstacle((2,4))
 
         self.assertEqual(len(obs.obstacles), 4)
@@ -50,19 +50,25 @@ class TestObstacles(unittest.TestCase):
         obs.add_obstacle(obstacle = ob2)
         obs.add_obstacle(obstacle = ob3)
         obs.add_obstacle((2,4))
-        self.assertEqual(
-            "- At position 0,0 (to 4,4)\n- At position 5,2 (to 9,6)\n- At position -15,-3 (to -11,1)\n- At position 2,4 (to 6,8)", str(obs))
+        s =  {"- At position 0,0 (to 4,4)",
+            "- At position 5,2 (to 9,6)",
+            "- At position -15,-3 (to -11,1)",
+            "- At position 2,4 (to 6,8)"}
+        o = str(obs)
+        for i in s:
+            self.assertIn(i, o)
+            o = o.replace(i, "")
+        self.assertEqual(o.strip(), '')
     
 
     def test_add_random_obstacle(self):
         obs = Obstacles()
         random.randint = lambda a, b: 1
         obs.add_random_obstacle((1,1),(1,1))
-        self.assertEqual(obs.obstacles[0].pos, (1,1))
+        self.assertEqual(obs.obstacles.pop().pos, (1,1))
         random.randint = lambda a, b: 0
         obs.add_random_obstacle((0,0),(0,0))
-        self.assertEqual(len(obs.obstacles), 1)
-        self.assertEqual(obs.obstacles[0].pos, (1,1))
+        self.assertEqual(len(obs.obstacles), 0)
 
 
         

@@ -1,16 +1,17 @@
 import unittest
 from unittest import mock
 from io import StringIO
+from maze.empty_maze import Maze
 from test_base import captured_io
 from command_handling.commands import Commands
-from toy_robot.robot_base import BaseRobot
+from toy_robot import ToyRobot
 from world.text.world import World
 
 
 class TestCommands(unittest.TestCase):
     commands = Commands()
-    world = World()
-    robot = BaseRobot()
+    world = World(Maze)
+    robot = ToyRobot()
     robot.name = "PAIN"
     world.add_robot(robot)
 

@@ -36,7 +36,7 @@ class Maze():
                     )
 
 
-    def get_maze(self) -> Obstacles():
+    def generate_obstacles(self) -> Obstacles():
         return self.maze
 
 

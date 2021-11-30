@@ -1,4 +1,4 @@
-from toy_robot.robot_base import BaseRobot
+from toy_robot import ToyRobot
 from world.text.world import World
 
 class Commands():      
@@ -324,14 +324,14 @@ class Commands():
 
 
     def exec_command(
-        self, world:World, robot:BaseRobot, command:list, command_str:str
+        self, world:World, robot:ToyRobot, command:list, command_str:str
     ):
         """
         Executes a specific command available to the robot.
 
         Args:
             world (World): The world the current robot is in
-            robot (BaseRobot): The robot that will do the command
+            robot (ToyRobot): The robot that will do the command
             command (list): A command name, then args, then tags
             command_str (str): The raw input
         """

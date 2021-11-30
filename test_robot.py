@@ -3,11 +3,6 @@ from test_base import run_unittests
 
 class TestRobot(unittest.TestCase):
 
-    
-    def test_base_robot(self):
-        test_result = run_unittests("test_base_robot")
-        self.assertTrue(test_result.wasSuccessful(), "unit tests should succeed")
-
 
     def test_commands(self):
         test_result = run_unittests("test_commands")

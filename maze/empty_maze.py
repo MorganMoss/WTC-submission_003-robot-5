@@ -1,4 +1,4 @@
-from .obstacles import *
+from .obstacles import Obstacles
 import random
 
 class Maze():
@@ -15,6 +15,6 @@ class Maze():
         self.maze.generate_obstacles(self.bounds_x, self.bounds_y)
 
 
-    def get_maze(self) -> Obstacles():
+    def generate_obstacles(self) -> Obstacles():
         return self.maze
 

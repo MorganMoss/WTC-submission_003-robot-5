@@ -1,6 +1,6 @@
 import turtle
 from world.text.world import World
-from toy_robot.robot_base import BaseRobot
+from toy_robot import ToyRobot
 
 
 class TurtleWorld(World):
@@ -58,13 +58,13 @@ class TurtleWorld(World):
 
 
     def add_robot(
-        self, robot: BaseRobot, 
+        self, robot: ToyRobot, 
         start_pos: tuple = (0,0), direction: float = 0) -> None:
         """
         Add a robot to the world.
 
         Args:
-            robot (BaseRobot): The robot to add
+            robot (ToyRobot): The robot to add
             start_pos (tuple, optional): Position it starts at. Defaults to (0,0).
             direction (float, optional): Direction it faces. Defaults to 0.
         """
@@ -134,24 +134,24 @@ class TurtleWorld(World):
         self.draw_obstacles()
 
 
-    def rotate_robot(self, robot: BaseRobot, angle: float) -> None:
+    def rotate_robot(self, robot: ToyRobot, angle: float) -> None:
         """
         Rotates robot, now with visuals.
 
         Args:
-            robot (BaseRobot): The robot to be rotated.
+            robot (ToyRobot): The robot to be rotated.
             angle (float): The degrees by which it rotates.
         """
         super().rotate_robot(robot, angle)
         self.robot_turtles[robot].rt(angle)
 
 
-    def move_robot(self, robot: BaseRobot, steps: int) -> bool:
+    def move_robot(self, robot: ToyRobot, steps: int) -> bool:
         """
         Moves the robot, now with visuals.
 
         Args:
-            robot (BaseRobot): The robot to be moved
+            robot (ToyRobot): The robot to be moved
             steps (int): The distance it moves
 
         Returns:
