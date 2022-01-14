@@ -139,7 +139,7 @@ class Obstacles():
                 obstacle.pos[1] <= y <= obstacle.end_pos[1]
         , self.obstacles))) > 0
 
-    
+    # Check if using continuity would be faster
     def is_path_blocked(self, 
         x1:int, y1:int,
         x2:int, y2:int

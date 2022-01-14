@@ -52,9 +52,11 @@ class TurtleWorld(World):
         turtle.pencolor("red")
         turtle.fillcolor("orange")
         turtle.speed(0)
+        self.screen.tracer(0)
         self.draw_box(*bounds_x,*bounds_y)
         self.draw_obstacles()
         self.robot_turtles = dict()
+        self.screen.tracer(1)
 
 
     def add_robot(
@@ -71,7 +73,7 @@ class TurtleWorld(World):
         super().add_robot(robot, start_pos=start_pos, direction=direction)
         self.robot_turtles[robot] = turtle.Turtle(visible=False, shape='turtle')
         self.robot_turtles[robot].penup()
-        self.robot_turtles[robot].color("dark green")
+        self.robot_turtles[robot].color("light blue")
         self.robot_turtles[robot].shapesize(self.cell_size/20*(self.scale-1)/self.cell_size)
         self.robot_turtles[robot].goto(*start_pos)
         self.robot_turtles[robot].lt(90)
@@ -80,6 +82,21 @@ class TurtleWorld(World):
         robot.messages_enabled = False
         self.rotate_robot(robot, direction)
         robot.messages_enabled = True
+
+        def move_foward():
+            self.move_robot(robot, self.cell_size*2)
+        def move_back():
+            self.move_robot(robot, -self.cell_size*2)
+        def turn_right():
+            self.rotate_robot(robot, 90)
+        def turn_left():
+            self.rotate_robot(robot, -90)
+
+        self.screen.onkey(move_foward, "Up")
+        self.screen.onkey(move_back, "Down")
+        self.screen.onkey(turn_right, "Right")
+        self.screen.onkey(turn_left, "Left")
+        self.screen.listen()
 
         
     def draw_box(
@@ -143,8 +160,10 @@ class TurtleWorld(World):
             angle (float): The degrees by which it rotates.
         """
         super().rotate_robot(robot, angle)
-        self.robot_turtles[robot].rt(angle)
-
+        if angle > 0:
+            self.robot_turtles[robot].rt(angle)
+        else:
+           self.robot_turtles[robot].lt(-angle) 
 
     def move_robot(self, robot: ToyRobot, steps: int) -> bool:
         """
@@ -160,3 +179,14 @@ class TurtleWorld(World):
         b = super().move_robot(robot, steps)
         self.robot_turtles[robot].goto(self.robot_pos[robot.name])
         return b
+
+    
+    def solve_to_pos(self, robot: ToyRobot, goal_pos: tuple):
+        self.robot_turtles[robot].speed(0)
+        robot.robot_say_message(
+            "Do you wish to watch the process? (y/n) : ", end='')
+        if not input().lower() == 'y':
+            self.screen.tracer(0)
+        super().solve_to_pos(robot, goal_pos)
+        self.screen.tracer(1)
+        self.robot_turtles[robot].speed(1)

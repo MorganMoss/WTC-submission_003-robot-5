@@ -46,6 +46,11 @@ class Commands():
                         "command": "command_forward", 
                         "args": [int],
                         "history": True},
+        
+        "F"   : { "description": "Move robot foward by [number] steps", 
+                        "command": "command_forward", 
+                        "args": [int],
+                        "history": True},
 
         "BACK"      : { "description": "Move robot back by [number] steps", 
                         "command": "command_back", 
@@ -58,6 +63,16 @@ class Commands():
                         "history": True},    
 
         "LEFT"      : { "description": "Rotate robot left", 
+                        "command": "command_turn_left", 
+                        "optional": [float],
+                        "history": True},
+
+        "R"     : { "description": "Rotate robot right", 
+                        "command": "command_turn_right", 
+                        "optional": [float],
+                        "history": True},    
+
+        "L"      : { "description": "Rotate robot left", 
                         "command": "command_turn_left", 
                         "optional": [float],
                         "history": True},
@@ -86,9 +101,14 @@ class Commands():
 
         "OBSTACLES" : { "description": "Shows a list of obstacles in current world.",
                         "command": "command_get_obstacles",
-                        "history": False}      
-        }
+                        "history": False},
 
+        "MAZERUN"   : { "description": "Goes to an edge. Default is top",
+                        "command": "command_mazerun",
+                        "optional": [str],
+                        "history": False}
+        }
+    
 
     def command_forward(self, steps:int):
         """
@@ -160,7 +180,27 @@ class Commands():
         if len(self.world.get_obstacles()) > 0:
             self.robot.robot_say_message("There are some obstacles:")
             self.robot.robot_say_message(str(self.world.obstacles))
+    
 
+    def command_mazerun(self, edge:str = 'top'):
+        if edge.lower() not in ["top", "bottom", "left", "right"]:
+            self.robot.robot_say_message(
+                f"Sorry, I did not understand '{self.command_str}'.",
+                f"{self.robot.name}: "
+            )
+        try:
+            goal_pos = {
+                "top":(0, self.world.bounds_y[1]),
+                "bottom":(0, self.world.bounds_y[0]),
+                "left":(self.world.bounds_x[0], 0),
+                "right":(self.world.bounds_x[1], 0)
+            }[edge.lower()]
+        except KeyError:
+            self.robot.robot_say_message(
+                "That's not an edge. Choose from top, bottom, left and right.")
+        self.world.solve_to_pos(self.robot, goal_pos)
+        
+        
 
     def command_off(self):
         """

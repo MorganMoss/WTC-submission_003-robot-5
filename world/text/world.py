@@ -1,5 +1,7 @@
-from maze.obstacles import Obstacles
+from cgitb import small
+from functools import reduce
 import math
+from multiprocessing import connection
 from toy_robot import ToyRobot
 
 
@@ -190,3 +192,144 @@ class World():
             f" > {robot.name} "
         )
 
+    def find_manhattan_distance(self, x1:int,y1:int,x2:int,y2:int) -> int:
+        """
+        This function takes in two co-ordinates and calculates it's
+        Manhattan Distance (MD). In summary this takes the x and y deltas
+        and adds them together
+
+        Args:
+            x1, y1 (int): The first point
+            x2, y2 (int): The second point
+
+        Returns:
+            int: The Manhattan Distance between the points
+        """
+        return abs(x2-x1) + abs(y2-y1)
+
+
+    def is_hugging_right(self, robot:ToyRobot) -> bool:
+        self.robot_direction[robot.name] = (
+            self.robot_direction[robot.name] 
+            + 90
+        )%360
+        destination = self.get_destination(robot, self.cell_size)
+        hugging_right = (
+            self.obstacles.is_path_blocked(
+                *self.robot_pos[robot.name], 
+                *destination)
+            or not self.destination_in_bounds(destination)
+        )
+        self.robot_direction[robot.name] = (
+            self.robot_direction[robot.name] 
+            - 90
+        )%360   
+        return hugging_right
+
+
+    def right_hand_algorithm_iteration(self, robot:ToyRobot):
+        """
+        It does a single iteration of the right hand maze solving algorithm
+        on a specific robot, this entials hugging a wall in essence.
+
+        Args:
+            robot (ToyRobot): The robot controlled in this process
+        """
+        if not self.is_hugging_right(robot):
+            self.rotate_robot(robot, 90)
+            self.move_robot(robot, self.cell_size)
+            return
+            
+        if not self.move_robot(robot, self.cell_size):
+            self.rotate_robot(robot, 180)
+
+
+    def find_productive_path(
+        self, robot:ToyRobot, goal_pos:tuple):
+        directions = [0,0,0,0]  # up, right, down, left
+        
+        for i in range(4):
+            destination = self.get_destination(robot, self.cell_size)
+            if (
+                not self.obstacles.is_path_blocked(
+                    *self.robot_pos[robot.name], 
+                    *destination)
+                and self.destination_in_bounds(destination)
+            ):
+                directions[i]  = self.find_manhattan_distance(
+                    *destination,*goal_pos
+                )
+            self.robot_direction[robot.name] = (
+                self.robot_direction[robot.name] 
+                + 90
+            )%360
+        
+        shortest = reduce(
+            lambda a,b : a if b>a else b,
+            filter(lambda x : x > 0, directions)
+        ) 
+
+        smallest_manhattan_distance = self.find_manhattan_distance(
+                    *self.robot_pos[robot.name],*goal_pos
+                )
+        if shortest < smallest_manhattan_distance and shortest > 0:
+            return shortest, directions.index(shortest)
+        else:
+            return False
+
+
+    def solve_to_pos(self, robot:ToyRobot, goal_pos:tuple):
+        
+        robot.messages_enabled = False
+        index = 0 if goal_pos[0] else 1
+        if index:
+            for x in range(self.bounds_x[0]+1, self.bounds_x[1]-2, self.cell_size):
+                if not (x, goal_pos[1]) in self.obstacles.obstacles:
+                    goal_pos = (x, goal_pos[1])
+                    break
+
+        else:
+            for y in range(self.bounds_y[0]+1, self.bounds_y[1]-2, self.cell_size):
+                if not (goal_pos[0], y) in self.obstacles.obstacles:
+                    goal_pos = (goal_pos[0], y)
+                    break
+        
+        lenience = range(goal_pos[index]-self.cell_size+2, goal_pos[index]+self.cell_size-1)
+
+        smallest_manhattan_distance = self.find_manhattan_distance(
+            *self.robot_pos[robot.name],*goal_pos
+        )
+        # while self.robot_pos[robot.name][index] != goal_pos[index]:
+        while not self.robot_pos[robot.name][index] in lenience:
+            productive_path = self.find_productive_path(robot, goal_pos)
+            if productive_path:
+                self.rotate_robot(robot, 90*productive_path[1])
+                self.move_robot(robot, self.cell_size)
+                self.rotate_robot(robot, -90*productive_path[1])
+            else:
+                smallest_manhattan_distance = self.find_manhattan_distance(
+                    *self.robot_pos[robot.name],*goal_pos
+                )
+
+                rotation = - self.robot_direction[robot.name]
+                if index:
+                    if goal_pos[1] < 0:
+                        rotation -= 180
+                else:
+                    if goal_pos[0] < 0:
+                        rotation -= 90
+                    else:
+                        rotation += 90
+                rotation -= 90
+                self.rotate_robot(robot, rotation)
+                self.move_robot(robot, self.cell_size)
+
+                while not (
+                    self.find_productive_path(robot, goal_pos) 
+                    and self.find_manhattan_distance(
+                        *self.robot_pos[robot.name]
+                        ,*goal_pos
+                    ) == smallest_manhattan_distance
+                ):
+                    self.right_hand_algorithm_iteration(robot)
+        robot.messages_enabled = True
