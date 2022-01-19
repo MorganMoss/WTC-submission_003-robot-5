@@ -12,5 +12,6 @@ __pycache__/
 venv/
 .vscode
 
-.obstacles.py
-.empty_maze.py
+obstacles.py
+empty_maze.py
+__init__.py
