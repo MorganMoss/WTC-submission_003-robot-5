@@ -76,7 +76,7 @@ class Obstacles():
         """
         if pos != None:
             self.obstacles.add(
-                Obstacle(((pos[0]), (pos[1])), ((end_pos[0]), (end_pos[1]))))
+                Obstacle(pos, end_pos))
         if obstacle != None:
             self.obstacles.add(obstacle)
 

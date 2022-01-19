@@ -1,3 +1,4 @@
+from tkinter import SEL
 from toy_robot import ToyRobot
 from world.text.world import World
 
@@ -95,7 +96,7 @@ class Commands():
         }
     
 
-    def command_forward(self, steps:int):
+    def command_forward(self, steps:int) -> None:
         """
         Moves robot forward and displays appropriate messages.
 
@@ -106,7 +107,7 @@ class Commands():
         self.world.get_position(self.robot)
         
 
-    def command_back(self, steps:int):
+    def command_back(self, steps:int) -> None:
         """
         Moves robot back and displays appropriate messages.
 
@@ -117,7 +118,7 @@ class Commands():
         self.world.get_position(self.robot)
 
 
-    def command_turn_right(self, degrees:float = 90):
+    def command_turn_right(self, degrees:float = 90) -> None:
         """
         Rotates robot 90° to the right
         and displays appropriate messages.
@@ -130,7 +131,7 @@ class Commands():
         self.world.get_position(self.robot)
 
 
-    def command_turn_left(self, degrees:float = 90):
+    def command_turn_left(self, degrees:float = 90) -> None:
         """
         Rotates robot 90° to the left
         and displays appropriate messages.
@@ -143,7 +144,7 @@ class Commands():
         self.world.get_position(self.robot)
         
 
-    def command_sprint(self, steps:int):
+    def command_sprint(self, steps:int) -> None:
         """
         Recursively moves the robot forward.
 
@@ -167,7 +168,7 @@ class Commands():
             self.robot.robot_say_message(str(self.world))
     
 
-    def command_mazerun(self, edge:str = 'top'):
+    def command_mazerun(self, edge:str = 'top') -> None:
         if edge.lower() not in ["top", "bottom", "left", "right"]:
             self.robot.robot_say_message(
                 f"Sorry, I did not understand '{self.command_str}'.",
@@ -184,10 +185,15 @@ class Commands():
             self.robot.robot_say_message(
                 "That's not an edge. Choose from top, bottom, left and right.")
         self.world.mazerun(self.robot, goal_pos)
+        self.robot.robot_say_message(
+            f"I am at the {edge.lower()} edge.",
+            f" > {self.robot.name} "
+        )
+        self.world.get_position(self.robot)
         
         
 
-    def command_off(self):
+    def command_off(self) -> None:
         """
         Exits and displays appropriate message.
         """
@@ -198,7 +204,7 @@ class Commands():
         raise SystemExit
         
 
-    def command_help(self):
+    def command_help(self) -> None:
         """
         Robot displays a detailed list of all the commands available.
         """
@@ -259,7 +265,7 @@ class Commands():
         return range(start, stop)
 
 
-    def command_replay(self, *args):
+    def command_replay(self, *args) -> None:
         """
         Replays all previous movement and rotation commands in a range.
 
@@ -318,7 +324,7 @@ class Commands():
         self.world.get_position(self.robot)
 
 
-    def command_show_history(self):
+    def command_show_history(self) -> None:
         """
         Prints the history of current robot in current world.
         """
@@ -337,7 +343,7 @@ class Commands():
                     )
 
 
-    def add_to_history(self, command:list):
+    def add_to_history(self, command:list) -> None:
         """
         Adds the given command to history
 
@@ -350,7 +356,7 @@ class Commands():
 
     def exec_command(
         self, world:World, robot:ToyRobot, command:list, command_str:str
-    ):
+    ) -> None:
         """
         Executes a specific command available to the robot.
 

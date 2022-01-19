@@ -375,6 +375,7 @@ class World():
         robot.messages_enabled = True
 
 
+
     def explore_zeros(self, x:int, y:int):
         """
         Gives a number to all the items
@@ -439,7 +440,11 @@ class World():
             robot (ToyRobot): The robot to be moved around
             goal_pos (tuple): The edge to land on
         """
-        # self.make_map()
+        robot.robot_say_message(
+            f"starting maze run..",
+            f" > {robot.name} "
+        )
+    
         if self.bounds_x[1]*4*self.bounds_y[1] > 2500:
             self.mazerun_slow(robot,goal_pos)
             return True

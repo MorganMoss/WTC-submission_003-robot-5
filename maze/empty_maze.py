@@ -8,7 +8,7 @@ class Maze():
         bounds_y:tuple = (-200, 200),cell_size:int = 4
     ) -> None:
         """
-        Constructor for my Maze
+        Constructor for my Maze. Makes a few random obstacles.
         """
         self.maze = Obstacles()
         self.bounds_x, self.bounds_y = bounds_x, bounds_y
@@ -16,5 +16,11 @@ class Maze():
 
 
     def generate_obstacles(self) -> Obstacles():
+        """
+        Gets a list of obstacles
+
+        Returns:
+            Obstacles: Obstacles object containing a list of obstacle objects
+        """
         return self.maze
 

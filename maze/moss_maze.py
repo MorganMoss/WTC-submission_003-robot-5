@@ -34,6 +34,12 @@ class Maze():
 
 
     def __str__(self) -> str:
+        """
+        The to string function for this class
+
+        Returns:
+            str: The string made by this class
+        """
         string =  ''
         for y in range(*self.y_range):
             row = ''
@@ -47,10 +53,22 @@ class Maze():
 
 
     def generate_obstacles(self) -> Obstacles():
+        """
+        Gets a list of obstacles
+
+        Returns:
+            Obstacles: Obstacles object containing a list of obstacle objects
+        """
         return self.maze
 
 
     def carve_exits(self, exit_count:int) -> None:
+        """
+        Carves exits on each edge of the maze
+
+        Args:
+            exit_count (int): Determines the amount of exits carved.
+        """
 
         x1 = random.randint(self.x_range[0],self.x_range[1]-1)
         x2 = random.randint(self.x_range[0],self.x_range[1]-1)
@@ -71,7 +89,16 @@ class Maze():
         self.carve_passage(self.x_range[1]-1, y2, self.x_range[1]-3, y2)
 
         
-    def carve_passage(self, x1,y1,x2,y2) -> None:
+    def carve_passage(self, x1:int,y1:int,x2:int,y2:int) -> None:
+        """
+        Removes the obstacle markers between 2 points.
+
+        Args:
+            x1 (int): the x co-ordinate of the first point.
+            y1 (int): the y co-ordinate of the first point.
+            x2 (int): the x co-ordinate of the second point.
+            y2 (int): the y co-ordinate of the second point.
+        """
         if y1 == y2:
             for x in range(x1, x2, -1 if x1 > x2 else 1):
                 for y in range(y1, y1+1):
@@ -82,7 +109,17 @@ class Maze():
                     self.nodes[x][y] = True
 
 
-    def create_maze(self, x, y) -> None:
+    def create_maze(self, x:int, y:int) -> None:
+        """
+        Using backtracking, this function procedurally generates a maze.
+        It tunnels in a random direction where it is possible to tunnel. 
+        If its not possible to tunnel further, 
+        it backtracks its path until it can
+
+        Args:
+            x (int): x co-ordinate of the starting point
+            y (int): y co-ordinate of the starting point
+        """
         while True:
             self.path.append((x,y))
 
