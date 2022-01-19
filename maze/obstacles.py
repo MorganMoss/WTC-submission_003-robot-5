@@ -75,7 +75,8 @@ class Obstacles():
             Defaults to None.
         """
         if pos != None:
-            self.obstacles.add(Obstacle(pos, end_pos))
+            self.obstacles.add(
+                Obstacle(((pos[0]), (pos[1])), ((end_pos[0]), (end_pos[1]))))
         if obstacle != None:
             self.obstacles.add(obstacle)
 
@@ -139,7 +140,7 @@ class Obstacles():
                 obstacle.pos[1] <= y <= obstacle.end_pos[1]
         , self.obstacles))) > 0
 
-    # Check if using continuity would be faster
+
     def is_path_blocked(self, 
         x1:int, y1:int,
         x2:int, y2:int

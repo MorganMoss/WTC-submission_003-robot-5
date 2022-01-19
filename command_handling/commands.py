@@ -47,11 +47,6 @@ class Commands():
                         "args": [int],
                         "history": True},
         
-        "F"   : { "description": "Move robot foward by [number] steps", 
-                        "command": "command_forward", 
-                        "args": [int],
-                        "history": True},
-
         "BACK"      : { "description": "Move robot back by [number] steps", 
                         "command": "command_back", 
                         "args": [int],
@@ -63,16 +58,6 @@ class Commands():
                         "history": True},    
 
         "LEFT"      : { "description": "Rotate robot left", 
-                        "command": "command_turn_left", 
-                        "optional": [float],
-                        "history": True},
-
-        "R"     : { "description": "Rotate robot right", 
-                        "command": "command_turn_right", 
-                        "optional": [float],
-                        "history": True},    
-
-        "L"      : { "description": "Rotate robot left", 
                         "command": "command_turn_left", 
                         "optional": [float],
                         "history": True},
@@ -179,7 +164,7 @@ class Commands():
         """
         if len(self.world.get_obstacles()) > 0:
             self.robot.robot_say_message("There are some obstacles:")
-            self.robot.robot_say_message(str(self.world.obstacles))
+            self.robot.robot_say_message(str(self.world))
     
 
     def command_mazerun(self, edge:str = 'top'):
@@ -198,7 +183,7 @@ class Commands():
         except KeyError:
             self.robot.robot_say_message(
                 "That's not an edge. Choose from top, bottom, left and right.")
-        self.world.solve_to_pos(self.robot, goal_pos)
+        self.world.mazerun(self.robot, goal_pos)
         
         
 
