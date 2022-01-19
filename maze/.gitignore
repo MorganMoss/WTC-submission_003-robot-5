@@ -1,0 +1,16 @@
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv
+venv/
+.vscode
+
+.obstacles.py
+.empty_maze.py
