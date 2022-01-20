@@ -27,10 +27,13 @@ class Maze():
         for x in range(*self.x_range):
             for y in range(*self.y_range):
                 if not self.nodes[x][y]:
-                    self.maze.add_obstacle(
-                        (x*cell_size - offset, y*cell_size - offset),
-                        ((x + 1)*cell_size - offset, (y + 1)*cell_size - offset)
-                    )
+                    try:
+                        self.maze.add_obstacle(
+                            (x*cell_size - offset, y*cell_size - offset),
+                            ((x + 1)*cell_size - offset, (y + 1)*cell_size - offset)
+                        )
+                    except AttributeError:
+                        return
 
 
     def __str__(self) -> str:

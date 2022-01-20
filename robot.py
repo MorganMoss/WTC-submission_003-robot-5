@@ -42,6 +42,7 @@ def robot_start() -> None:
     toy_robot = ToyRobot()
     toy_robot.start()
     world.add_robot(toy_robot, (0,0))
+    
 
     for arg in sys.argv:
         if "maze" in arg:
