@@ -15,4 +15,5 @@ venv/
 obstacles.py
 empty_maze.py
 mazerunner.py
+maze_run.py
 __init__.py
