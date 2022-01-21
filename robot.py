@@ -10,18 +10,17 @@ if 'turtle' in sys.argv:
     from world.turtle.world import TurtleWorld as World
 else:
     from world.text.world import World
+
 for arg in sys.argv:
-    if "maze" in arg:
+    if "maze" in arg.lower():
         try:
-            Maze = getattr(importlib.import_module("."+arg, "maze"), "Maze")
+            Maze = importlib.import_module("."+arg, "maze")
             break
         except:
-            ...
-    from maze.empty_maze import Maze
+            print("Import Failed! Using Empty Maze")
+    import maze.empty_maze as Maze
 
-# # Debug
-# from world.turtle.world import TurtleWorld as World
-# from maze.moss_maze import Maze
+# import maze.moss_maze as Maze
 
 def robot_start() -> None:
     """This is the entry point for starting my robot"""   
@@ -29,13 +28,15 @@ def robot_start() -> None:
     #Constants
     cell_size = 4
     num = list(filter(lambda arg: arg.isnumeric(), sys.argv))
-    if len(num)>0:
-        cell_size = int(num[0])
     scale = 1
     x_size =100
     y_size =196
     bounds_x = (-x_size*scale, x_size*scale)
     bounds_y = (-y_size*scale, y_size*scale)
+    
+    if  len(num) > 0:
+        cell_size = int(num[0]) if int(num[0]) > 1 else cell_size
+        Maze.Maze(bounds_x,bounds_y,cell_size)
 
     #Initializing a World and Robot
     world = World(Maze, bounds_x, bounds_y, cell_size)

@@ -1,5 +1,5 @@
 import unittest
-from maze.empty_maze import Maze
+import maze.empty_maze as Maze
 from world.text.world import World
 from world.turtle.world import TurtleWorld
 from toy_robot import ToyRobot

@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 from io import StringIO
-from maze.empty_maze import Maze
+import maze.empty_maze as Maze
 from test_base import captured_io
 from command_handling.commands import Commands
 from toy_robot import ToyRobot

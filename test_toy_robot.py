@@ -3,7 +3,7 @@ from unittest import mock
 from io import StringIO
 from command_handling.command_handling import CommandHandler
 from command_handling.commands import Commands
-from maze.empty_maze import Maze
+import maze.empty_maze as Maze
 from test_base import captured_io
 from toy_robot import ToyRobot
 from world.text.world import World

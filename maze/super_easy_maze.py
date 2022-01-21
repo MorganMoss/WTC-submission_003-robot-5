@@ -1,12 +1,13 @@
 import random
 
 
+
 constraints_x = (-100, 100)
 constraints_y =(-200,200)
 
 
 
-def get_obstacles(constraints_x, constraints_y):
+def get_obstacles(constraints_x= constraints_x, constraints_y=constraints_y):
     """Generates a random amount of obstacles for the game world
 
     Args:
@@ -186,3 +187,6 @@ def is_path_blocked(starting_position,ending_position, obstacle_list, current_di
             if  i[1] <= starting_position["y"] <= (i[1] + 4) and ending_position["x"] <= (i[0] + 4) <= starting_position["x"]:
                 return True
     return False
+
+#Morgan Added this
+generate_obstacles = get_obstacles

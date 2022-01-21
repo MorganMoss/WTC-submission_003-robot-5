@@ -1,5 +1,8 @@
+from cmath import inf
 from functools import reduce
 import math
+from modulefinder import Module
+from maze.obstacles import Obstacles
 from toy_robot import ToyRobot
 
 
@@ -7,6 +10,52 @@ class World():
     """
     A world for robots to move around in.
     """
+
+    def handle_obstacles(self, maze:Module):
+        """
+        This is to translate what I get from other's mazes 
+        to work well with my mazerunner.
+
+        Args:
+            maze (Module): The maze being used
+        """
+        # try:
+        #     maze = maze(self.bounds_x, self.bounds_y, self.cell_size)
+        # except TypeError:
+        #     ...
+        old_cell_size = self.cell_size
+
+        obstacles = maze.generate_obstacles()
+        smallest = inf
+
+        for obstacle_1 in obstacles:
+            for obstacle_2 in obstacles:
+                if obstacle_1 != obstacle_2:
+                    if obstacle_1[1] == obstacle_2[1]:
+                        smallest = min(smallest, abs(obstacle_1[0] - obstacle_2[0]))
+                    elif obstacle_1[0] == obstacle_2[0]:
+                        smallest = min(smallest, abs(obstacle_1[1] - obstacle_2[1]))
+        if smallest != inf:
+            self.cell_size = int(smallest)
+
+        low_x = 0
+        high_x = 0
+        low_y = 0
+        high_y = 0
+
+        for obstacle in obstacles:
+            self.obstacles.add_obstacle(
+                obstacle, (obstacle[0] + self.cell_size, obstacle[1] + self.cell_size))
+            low_x =  min(low_x, obstacle[0])
+            high_x = max(high_x, obstacle[0]+ self.cell_size)
+            low_y =  min(low_y, obstacle[1])
+            high_y = max(high_y, obstacle[1]+ self.cell_size)
+        if not(high_x < 10 or low_x > -10 or high_y < 10 or low_y > -10):
+            self.bounds_x = (int(low_x), int(high_x))
+            self.bounds_y = (int(low_y), int(high_y))
+        else:
+            self.cell_size = old_cell_size
+
 
     def __init__(
         self, maze: type,
@@ -25,15 +74,14 @@ class World():
              Vertical boundary. Defaults to (-200,200).
             cell_size (int, optional): Here for turtle world to function
         """
-        self.obstacles = maze(
-            bounds_x, bounds_y, cell_size
-        ).generate_obstacles()
-        self.bounds_x = bounds_x
-        self.bounds_y = bounds_y
+        self.obstacles:Obstacles = Obstacles()
+        self.bounds_x:tuple = bounds_x
+        self.bounds_y:tuple = bounds_y
+        self.cell_size:int = cell_size
         self.robot_pos = dict()
         self.robot_direction = dict()
-        self.cell_size = cell_size
         self.map_of_maze:dict = dict()
+        self.handle_obstacles(maze)
 
 
     def __str__(self) -> str:

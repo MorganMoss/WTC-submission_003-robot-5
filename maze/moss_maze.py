@@ -22,9 +22,10 @@ Made by Morgan Moss
 ░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▀▀░░░░░░░░
 """
 
-from .obstacles import Obstacles
+
 import random
 
+maze = None
 
 class Maze():
     
@@ -35,14 +36,12 @@ class Maze():
         """
         Constructor for my Maze
         """
+ 
+        self.maze:set = set()      
 
-        try:
-            self.maze = Obstacles()
-        except AttributeError:    
-            self.maze = set()      
-
-        self.path = []
+        self.path:list = []
         offset = cell_size/2
+        # offset = 0
         width = bounds_x[1]//cell_size + bounds_x[1]//cell_size%2 
         height = bounds_y[1]//cell_size + bounds_y[1]//cell_size%2
         self.x_range = -width + 1, width
@@ -57,13 +56,10 @@ class Maze():
         for x in range(*self.x_range):
             for y in range(*self.y_range):
                 if not self.nodes[x][y]:
-                    try:
-                        self.maze.add_obstacle(
-                            (x*cell_size - offset, y*cell_size - offset),
-                            ((x + 1)*cell_size - offset, (y + 1)*cell_size - offset)
-                        )
-                    except AttributeError:
-                        self.maze.add(x*cell_size - offset, y*cell_size - offset)
+                    self.maze.add((x*cell_size - offset, y*cell_size - offset))
+        
+        global maze
+        maze = self
 
 
     def __str__(self) -> str:
@@ -78,25 +74,22 @@ class Maze():
             row = ''
             for x in range(*self.x_range):
                 if not self.nodes[x][-y]:
-                    row += 'xx'
+                    row += 'X'
                 else:
-                    row += '  '
+                    row += ' '
             string += row + '\n'
         return string
 
 
-    def generate_obstacles(self) -> Obstacles() or str:
+    def generate_obstacles(self) -> list:
         """
         Gets a list of obstacles
 
         Returns:
-            Obstacles: Obstacles object containing a list of obstacle objects
+            list[tuple(int,int)]: Obstacles object containing a list of obstacle objects
         """
-        if len(self.maze) > 0:
-            return list(self.maze)
-        else:
-            return str(self)
-
+        return list(self.maze)
+       
 
     def carve_exits(self) -> None:
         """
@@ -181,3 +174,10 @@ class Maze():
                 break
 
         self.carve_exits()
+
+def generate_obstacles():
+    global maze
+    if maze != None:
+        return maze.generate_obstacles()
+    else:
+        return Maze().generate_obstacles()

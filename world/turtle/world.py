@@ -35,17 +35,17 @@ class TurtleWorld(World):
         turtle.hideturtle()
 
         self.scale = 8
-        if cell_size > 10:
+        if self.cell_size > 10:
             self.scale = 16
 
         self.screen = turtle.getscreen()
         self.screen.screensize(
-            (bounds_x[1]-bounds_x[0])*self.scale/cell_size+1,
-            (bounds_y[1]-bounds_y[0])*self.scale/cell_size+cell_size*2
+            (self.bounds_x[1]-self.bounds_x[0])*self.scale/self.cell_size+1,
+            (self.bounds_y[1]-self.bounds_y[0])*self.scale/self.cell_size+self.cell_size*2
         )
 
-        self.screen.xscale=self.scale/cell_size
-        self.screen.yscale=self.scale/cell_size
+        self.screen.xscale=self.scale/self.cell_size
+        self.screen.yscale=self.scale/self.cell_size
         
         self.screen.bgcolor("black")
 
@@ -53,7 +53,7 @@ class TurtleWorld(World):
         turtle.fillcolor("orange")
         turtle.speed(0)
         self.screen.tracer(0)
-        self.draw_box(*bounds_x,*bounds_y)
+        self.draw_box(*self.bounds_x,*self.bounds_y)
         self.draw_obstacles()
         self.robot_turtles = dict()
         self.screen.tracer(1)

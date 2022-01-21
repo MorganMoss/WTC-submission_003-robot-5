@@ -1,5 +1,7 @@
 import random
 
+from maze.mekhails_maze import generate_obstacles
+
 '''
 Pranav 
 ⣿⣿⣿⣿⣿⣿⣿⡿⠛⠉⠉⠉⠉⠛⠻⣿⣿⠿⠛⠛⠙⠛⠻⣿⣿⣿⣿⣿⣿⣿
@@ -113,3 +115,6 @@ def is_path_blocked(x1, y1, x2, y2):
     return False
 
 
+#Morgan added this
+get_walls()
+generate_obstacles = lambda : obstacles_lst
