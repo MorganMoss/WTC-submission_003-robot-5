@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     if "--list" in sys.argv:
         mazes = os.listdir("./maze")
-        mazes = filter(lambda word : "maze" in word, mazes)
+        mazes = filter(lambda word : "maze" in word and ".py" in word, mazes )
         mazes = map(lambda word : word.replace(".py", ''), mazes)
         print(*mazes, sep="\n")
         raise SystemExit

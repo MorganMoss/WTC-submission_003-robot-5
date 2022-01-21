@@ -481,3 +481,10 @@ class World():
                     break
                     
         self.path.reverse()
+
+
+    def enable_keys(self) -> None:
+        """
+        Placeholder for Turtle World
+        """
+        print("This only works on Turtle!")

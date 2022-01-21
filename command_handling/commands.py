@@ -92,7 +92,11 @@ class Commands():
         "MAZERUN"   : { "description": "Goes to an edge. Default is top",
                         "command": "command_mazerun",
                         "optional": [str],
-                        "history": False}
+                        "history": False},
+        
+        "KEYS"      : { "description": "Allows movement with arrow keys",
+                        "command": "command_keys",
+                        "history": False},
         }
     
 
@@ -343,6 +347,13 @@ class Commands():
                     )
 
 
+    def command_keys(self) -> None:
+        """
+        Let's you use arrow keys to move around.
+        """
+        self.world.enable_keys()
+
+
     def add_to_history(self, command:list) -> None:
         """
         Adds the given command to history
@@ -376,4 +387,5 @@ class Commands():
             self,
             self.command_dict[command[0].upper()]["command"]
         )(*command[1:])
+
 

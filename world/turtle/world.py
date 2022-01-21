@@ -104,7 +104,6 @@ class TurtleWorld(World):
         self.screen.onkey(move_back, "Down")
         self.screen.onkey(turn_right, "Right")
         self.screen.onkey(turn_left, "Left")
-        self.screen.listen()
 
         
     def draw_box(
@@ -220,3 +219,9 @@ class TurtleWorld(World):
             for pos in self.path:
                 self.robot_turtles[robot].goto(pos)
                 self.robot_pos[robot.name] = pos
+    
+    def enable_keys(self) -> None:
+        """
+        Allows movement with arrowkeys
+        """
+        self.screen.listen()

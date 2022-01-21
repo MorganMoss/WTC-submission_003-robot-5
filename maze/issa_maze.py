@@ -1,17 +1,82 @@
 import random
 
+'''
+Pranav 
+⣿⣿⣿⣿⣿⣿⣿⡿⠛⠉⠉⠉⠉⠛⠻⣿⣿⠿⠛⠛⠙⠛⠻⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⢀⣀⣀⡀⠀⠈⢄⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⠏⠀⠀⠀⠔⠉⠁⠀⠀⠈⠉⠓⢼⡤⠔⠒⠀⠐⠒⠢⠌⠿⢿⣿⣿⣿
+⣿⣿⣿⡏⠀⠀⠀⠀⠀⠀⢀⠤⣒⠶⠤⠭⠭⢝⡢⣄⢤⣄⣒⡶⠶⣶⣢⡝⢿⣿
+⡿⠋⠁⠀⠀⠀⠀⣀⠲⠮⢕⣽⠖⢩⠉⠙⣷⣶⣮⡍⢉⣴⠆⣭⢉⠑⣶⣮⣅⢻
+⠀⠀⠀⠀⠀⠀⠀⠉⠒⠒⠻⣿⣄⠤⠘⢃⣿⣿⡿⠫⣿⣿⣄⠤⠘⢃⣿⣿⠿⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠤⠭⣥⣀⣉⡩⡥⠴⠃⠀⠈⠉⠁⠈⠉⠁⣴⣾⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠤⠔⠊⠀⠀⠀⠓⠲⡤⠤⠖⠐⢿⣿⣿⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿
+⠀⠀⠀⠀⠀⠀⠀⢸⣿⡻⢷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣘⣿⣿
+⠀⠀⠀⠀⠀⠠⡀⠀⠙⢿⣷⣽⣽⣛⣟⣻⠷⠶⢶⣦⣤⣤⣤⣤⣶⠾⠟⣯⣿⣿
+⠀⠀⠀⠀⠀⠀⠉⠂⠀⠀⠀⠈⠉⠙⠛⠻⠿⠿⠿⠿⠶⠶⠶⠶⠾⣿⣟⣿⣿⣿
+⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿
+⣿⣿⣶⣤⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣟⢿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+'''
+
+maze = [
+    'X00X000000',
+    'X0X000X0X0',
+    'X0X0XX000X',
+    '0000X00XX0',
+    'X0X0X00X0X',
+    '00X00X0X00',
+    'XXX000X00X',
+    'X00X00XX0X',
+    '000X0000X0',
+    '0X00XX0XX0',
+    '00X00X00X0',
+    'X0000XX000',
+    'XX0X0000X0',
+    'X00XX0XXX0',
+    '0000000000',
+    'X00XX00X0X',
+    '00000X0X00',
+    '0X0X0X0X0X',
+    '0X00000000',
+    '000X00X00X',
+]
+
 obstacles_lst = list()
+open_spaces = []
 
 
-def get_num_obstacles():
+def get_walls():
     '''
-    Gets a random number of obstacles.
+    Gets bottom left coordinate of each cell wall
     '''
-    num_obstacles = random.randint(1,10)
+    current_coords = [-100, 180]
 
-    return num_obstacles
+    for row in maze:
+        for block in list(row):
+            current_x, current_y = current_coords[0], current_coords[1]
+            if block == 'X':
+                obstacles_lst.append((current_x, current_y))
+            else:
+                current_space = open_space_coords((current_x, current_y))
+                open_spaces.append(tuple(current_space))
+            current_coords[0] += 20
+        current_coords[1] -= 20
+        current_coords[0] = -100
+    
+    random_space = random.choice(open_spaces)
+    
+    return list(random_space)
 
 # l = [(x,y) for x in range(0,6) for y in range(0,6)]
+
+
+def open_space_coords(current_coords):
+    x = current_coords[0]
+    y = current_coords[1]
+    x += 10
+    y += 10
+    return [x, y]
 
 
 def is_position_blocked(x,y):
@@ -46,33 +111,5 @@ def is_path_blocked(x1, y1, x2, y2):
             return True
             
     return False
-
-
-def get_obstacles():
-    '''
-    Returns a list of obstacles.
-    All x,y values within the set area limit.
-    '''
-    num_obs = get_num_obstacles()
-    global obstacles_lst
-
-    obstacles_lst = []
-
-    for _ in range(num_obs):
-        x = 0
-        y = 0
-        while x == 0 and y == 0:
-            x = random.randint(-100, 100)
-            y = random.randint(-200, 200)
-
-        obstacles_lst.append((x,y))
-    return obstacles_lst
-
-def start_obstacles():
-    '''
-    Initializes obstacle list.
-    '''
-    global obstacles_lst
-    obstacle_lst = get_obstacles()
 
 

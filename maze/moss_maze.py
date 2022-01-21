@@ -55,14 +55,18 @@ class Maze():
         return string
 
 
-    def generate_obstacles(self) -> Obstacles():
+    def generate_obstacles(self) -> Obstacles() or str:
         """
         Gets a list of obstacles
 
         Returns:
             Obstacles: Obstacles object containing a list of obstacle objects
+            Str: if Obstacles don't exist as a class
         """
-        return self.maze
+        if len(self.maze) > 0:
+            return self.maze
+        else:
+            return str(self)
 
 
     def carve_exits(self, exit_count:int) -> None:
@@ -156,10 +160,10 @@ class Maze():
                 break
 
         # This should probs be separate         
-        print("Moss_Maze: Greetings! How many exits do you wish for >:3")
-        exit_count = input("Enter a number between 0 and 4: ")
-        self.carve_exits(exit_count)
-        print("Moss_Maze: It has been completed!")
-        consent = input("Do you want to see the maze in text form? (y/n): ")
-        if consent.lower() == 'y':
-            print(str(self))
+        # print("Moss_Maze: Greetings! How many exits do you wish for >:3")
+        # exit_count = input("Enter a number between 0 and 4: ")
+        # self.carve_exits(exit_count)
+        # print("Moss_Maze: It has been completed!")
+        # consent = input("Do you want to see the maze in text form? (y/n): ")
+        # if consent.lower() == 'y':
+        #     print(str(self))
