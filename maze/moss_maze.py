@@ -1,6 +1,7 @@
 from .obstacles import Obstacles
 import random
 
+
 class Maze():
     
     def __init__(
@@ -10,7 +11,12 @@ class Maze():
         """
         Constructor for my Maze
         """
-        self.maze = Obstacles()
+
+        try:
+            self.maze = Obstacles()
+        except AttributeError:    
+            self.maze = set()      
+
         self.path = []
         offset = cell_size/2
         width = bounds_x[1]//cell_size + bounds_x[1]//cell_size%2 
@@ -33,7 +39,7 @@ class Maze():
                             ((x + 1)*cell_size - offset, (y + 1)*cell_size - offset)
                         )
                     except AttributeError:
-                        return
+                        self.maze.add(x*cell_size - offset, y*cell_size - offset)
 
 
     def __str__(self) -> str:
@@ -61,15 +67,14 @@ class Maze():
 
         Returns:
             Obstacles: Obstacles object containing a list of obstacle objects
-            Str: if Obstacles don't exist as a class
         """
         if len(self.maze) > 0:
-            return self.maze
+            return list(self.maze)
         else:
             return str(self)
 
 
-    def carve_exits(self, exit_count:int) -> None:
+    def carve_exits(self) -> None:
         """
         Carves exits on each edge of the maze
 
@@ -82,17 +87,9 @@ class Maze():
         y1 = random.randint(self.y_range[0],self.y_range[1]-1)
         y2 = random.randint(self.y_range[0],self.y_range[1]-1)
     
-        if exit_count == '0':
-            return
         self.carve_passage(x1, self.y_range[0],  x1, self.y_range[0]+2)
-        if exit_count == '1':
-            return
         self.carve_passage(x2, self.y_range[1]-1,  x2, self.y_range[1]-3)
-        if exit_count == '2':
-            return
         self.carve_passage(self.x_range[0], y1, self.x_range[0]+2, y1)
-        if exit_count == '1':
-            return
         self.carve_passage(self.x_range[1]-1, y2, self.x_range[1]-3, y2)
 
         
@@ -159,11 +156,4 @@ class Maze():
                     continue
                 break
 
-        # This should probs be separate         
-        # print("Moss_Maze: Greetings! How many exits do you wish for >:3")
-        # exit_count = input("Enter a number between 0 and 4: ")
-        # self.carve_exits(exit_count)
-        # print("Moss_Maze: It has been completed!")
-        # consent = input("Do you want to see the maze in text form? (y/n): ")
-        # if consent.lower() == 'y':
-        #     print(str(self))
+        self.carve_exits()

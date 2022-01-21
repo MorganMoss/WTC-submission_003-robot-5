@@ -141,9 +141,9 @@ class TurtleWorld(World):
         turtle.shape("square")
         turtle.turtlesize(self.cell_size/20*(self.scale-1)/self.cell_size)
 
-        for obstacle in self.obstacles.obstacles:
-            x1, y1 = obstacle.pos
-            x2, y2 = obstacle.end_pos
+        for obstacle in self.obstacles:
+            x1, y1 = obstacle[0]
+            x2, y2 = obstacle[1]
             x = (x1 + x2)//2
             y = (y1 + y2)//2
             turtle.goto(x,y)

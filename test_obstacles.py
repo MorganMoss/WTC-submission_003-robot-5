@@ -3,52 +3,32 @@ import unittest
 import random
 
 
-class TestObstacle(unittest.TestCase):
-    def test_constructor(self):
-        ob = Obstacle((0,0))
-        self.assertEqual(ob.pos, (0,0))
-        ob = Obstacle((5,2))
-        self.assertEqual(ob.pos, (5,2))
-        ob = Obstacle((-15,-3))
-        self.assertEqual(ob.pos, (-15,-3))
-
-
-    def test_to_str(self):
-        ob = Obstacle((0,0))
-        self.assertEqual("- At position 0,0 (to 4,4)", str(ob))
-        ob = Obstacle((5,2))
-        self.assertEqual("- At position 5,2 (to 9,6)", str(ob))
-        ob = Obstacle((-15,-3))
-        self.assertEqual("- At position -15,-3 (to -11,1)", str(ob))
-
-
 class TestObstacles(unittest.TestCase):
     def test_constructor(self):
         obs = Obstacles()
-        self.assertEqual(obs.obstacles, set())
+        self.assertEqual(obs, set())
 
 
     def test_add_obstacle(self):
         obs = Obstacles()
-        ob1 = Obstacle((0,0))
-        ob2 = Obstacle((5,2))
-        ob3 = Obstacle((-15,-3))
-        obs.add_obstacle(obstacle=ob1)
-        obs.add_obstacle(obstacle=ob2)
-        obs.add_obstacle(obstacle=ob3)
+        ob1 = (0,0)
+        ob2 = (5,2)
+        ob3 = (-15,-3)
+        obs.add_obstacle(ob1)
+        obs.add_obstacle(ob2)
+        obs.add_obstacle(ob3)
         obs.add_obstacle((2,4))
-
-        self.assertEqual(len(obs.obstacles), 4)
+        self.assertEqual(len(obs), 4)
 
 
     def test_to_str(self):
         obs = Obstacles()
-        ob1 = Obstacle((0,0))
-        ob2 = Obstacle((5,2))
-        ob3 = Obstacle((-15,-3))
-        obs.add_obstacle(obstacle = ob1)
-        obs.add_obstacle(obstacle = ob2)
-        obs.add_obstacle(obstacle = ob3)
+        ob1 = (0,0)
+        ob2 = (5,2)
+        ob3 = (-15,-3)
+        obs.add_obstacle(ob1)
+        obs.add_obstacle(ob2)
+        obs.add_obstacle(ob3)
         obs.add_obstacle((2,4))
         s =  {"- At position 0,0 (to 4,4)",
             "- At position 5,2 (to 9,6)",
@@ -65,18 +45,18 @@ class TestObstacles(unittest.TestCase):
         obs = Obstacles()
         random.randint = lambda a, b: 1
         obs.add_random_obstacle((1,1),(1,1))
-        self.assertEqual(obs.obstacles.pop().pos, (1,1))
+        self.assertEqual(obs.pop()[0], (1,1))
         random.randint = lambda a, b: 0
         obs.add_random_obstacle((0,0),(0,0))
-        self.assertEqual(len(obs.obstacles), 0)
+        self.assertEqual(len(obs), 0)
 
 
         
     def test_generate_obstacles(self):
         obs = Obstacles()
         obs.generate_obstacles((1,1),(1,1))
-        for ob in obs.obstacles:
-            self.assertEqual(ob.pos, (1,1))
+        for ob in obs:
+            self.assertEqual(ob[0], (1,1))
 
 
     def test_is_position_blocked(self):

@@ -58,7 +58,7 @@ class World():
         Returns:
             list[Obstacles]: A list of Obstacles in this world.
         """
-        return self.obstacles.obstacles
+        return self.obstacles
 
 
     def generate_obstacles(self) -> None:
@@ -320,14 +320,14 @@ class World():
         if index:
             for x in range(
                 self.bounds_x[0]+1, self.bounds_x[1]-2, self.cell_size):
-                if not (x, goal_pos[1]) in self.obstacles.obstacles:
+                if not (x, goal_pos[1]) in self.obstacles:
                     goal_pos = (x, goal_pos[1])
                     break
 
         else:
             for y in range(
                 self.bounds_y[0]+1, self.bounds_y[1]-2, self.cell_size):
-                if not (goal_pos[0], y) in self.obstacles.obstacles:
+                if not (goal_pos[0], y) in self.obstacles:
                     goal_pos = (goal_pos[0], y)
                     break
         
