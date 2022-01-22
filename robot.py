@@ -34,11 +34,11 @@ def robot_start() -> None:
             break
         except ValueError:
             num = 0
-            
+
     scale = 1
     if num > 2:
         cell_size = int(num) 
-    else:
+    elif num > 0:
         cell_size = 2
         scale = int(1/num*2)
 
