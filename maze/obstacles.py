@@ -155,6 +155,3 @@ class Obstacles(set):
                         return True
                 x += 1
         return False
-
-
-#boop
