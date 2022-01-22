@@ -27,15 +27,27 @@ def robot_start() -> None:
     
     #Constants
     cell_size = 4
-    num = list(filter(lambda arg: arg.isnumeric(), sys.argv))
+    # num = list(filter(lambda arg: arg.isnumeric(), sys.argv))
+    for arg in sys.argv:
+        try:
+            num = float(arg)
+            break
+        except ValueError:
+            num = 0
+            
     scale = 1
+    if num > 2:
+        cell_size = int(num) 
+    else:
+        cell_size = 2
+        scale = int(1/num*2)
+
     x_size =100
     y_size =196
     bounds_x = (-x_size*scale, x_size*scale)
     bounds_y = (-y_size*scale, y_size*scale)
     
-    if  len(num) > 0:
-        cell_size = int(num[0]) if int(num[0]) > 1 else cell_size
+    if cell_size != 4:
         Maze.Maze(bounds_x,bounds_y,cell_size)
 
     #Initializing a World and Robot

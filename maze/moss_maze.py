@@ -36,9 +36,8 @@ class Maze():
         """
         Constructor for my Maze
         """
- 
-        self.maze:set = set()      
 
+        self.maze:set = set()      
         self.path:list = []
         offset = cell_size/2
         # offset = 0
@@ -174,6 +173,8 @@ class Maze():
                 break
 
         self.carve_exits()
+
+my_maze = None
 
 def generate_obstacles():
     global maze

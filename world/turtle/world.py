@@ -188,24 +188,6 @@ class TurtleWorld(World):
         self.robot_turtles[robot].goto(self.robot_pos[robot.name])
         return b
 
-    
-    def mazerun_slow(self, robot: ToyRobot, goal_pos: tuple):
-        """
-        Solves the maze by trying all paths with the turtle.
-
-        Args:
-            robot (ToyRobot): The robot to be moved around
-            goal_pos (tuple): The edge to land on
-        """
-        self.robot_turtles[robot].speed(0)
-        robot.robot_say_message(
-            "Do you wish to watch the process? (y/n) : ", end='')
-        if not input().lower() == 'y':
-            self.screen.tracer(0)
-        super().mazerun_slow(robot, goal_pos)
-        self.screen.tracer(1)
-        self.robot_turtles[robot].speed(1)
-
 
     def mazerun(self, robot: ToyRobot, goal_pos: tuple):
         """
@@ -218,7 +200,7 @@ class TurtleWorld(World):
         if not super().mazerun(robot, goal_pos):
             for pos in self.path:
                 self.robot_turtles[robot].goto(pos)
-                self.robot_pos[robot.name] = pos
+                
     
     def enable_keys(self) -> None:
         """

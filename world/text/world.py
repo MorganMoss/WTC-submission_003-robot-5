@@ -1,7 +1,7 @@
 from cmath import inf
-from functools import reduce
 import math
 from modulefinder import Module
+from sys import setrecursionlimit
 from maze.obstacles import Obstacles
 from toy_robot import ToyRobot
 
@@ -19,24 +19,24 @@ class World():
         Args:
             maze (Module): The maze being used
         """
-        # try:
-        #     maze = maze(self.bounds_x, self.bounds_y, self.cell_size)
-        # except TypeError:
-        #     ...
+
         old_cell_size = self.cell_size
 
         obstacles = maze.generate_obstacles()
         smallest = inf
-
-        for obstacle_1 in obstacles:
-            for obstacle_2 in obstacles:
-                if obstacle_1 != obstacle_2:
-                    if obstacle_1[1] == obstacle_2[1]:
-                        smallest = min(smallest, abs(obstacle_1[0] - obstacle_2[0]))
-                    elif obstacle_1[0] == obstacle_2[0]:
-                        smallest = min(smallest, abs(obstacle_1[1] - obstacle_2[1]))
-        if smallest != inf:
-            self.cell_size = int(smallest)
+        try :
+            maze.my_maze
+            # print("worked")
+        except AttributeError:
+            for obstacle_1 in obstacles:
+                for obstacle_2 in obstacles:
+                    if obstacle_1 != obstacle_2:
+                        if obstacle_1[1] == obstacle_2[1]:
+                            smallest = min(smallest, abs(obstacle_1[0] - obstacle_2[0]))
+                        elif obstacle_1[0] == obstacle_2[0]:
+                            smallest = min(smallest, abs(obstacle_1[1] - obstacle_2[1]))
+            if smallest != inf:
+                self.cell_size = int(smallest)
 
         low_x = 0
         high_x = 0
@@ -55,6 +55,26 @@ class World():
             self.bounds_y = (int(low_y), int(high_y))
         else:
             self.cell_size = old_cell_size
+
+
+    def pixelate_obstacles(self, maze:Module):
+        obstacles = list(set(maze.generate_obstacles()))
+        obstacles = sorted(obstacles, key = lambda a : a[1])
+        obstacles = sorted(obstacles, key = lambda a : a[0])
+        
+        self.map_of_maze:dict = dict()
+        offset = -0.5
+        self.x_range = list(range(self.bounds_x[0], self.bounds_x[1], self.cell_size))
+        self.x_range.reverse()
+        self.y_range = range(self.bounds_y[0], self.bounds_y[1], self.cell_size)
+
+        for x in self.x_range:
+            self.map_of_maze[int((x/self.cell_size)-offset)] = dict()
+            for y in self.y_range:
+                if (x,y) in obstacles:
+                    self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 1
+                else:
+                    self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 0
 
 
     def __init__(
@@ -80,8 +100,8 @@ class World():
         self.cell_size:int = cell_size
         self.robot_pos = dict()
         self.robot_direction = dict()
-        self.map_of_maze:dict = dict()
         self.handle_obstacles(maze)
+        self.pixelate_obstacles(maze)
 
 
     def __str__(self) -> str:
@@ -247,183 +267,6 @@ class World():
         )
     
 
-
-    def find_manhattan_distance(self, x1:int,y1:int,x2:int,y2:int) -> int:
-        """
-        This function takes in two co-ordinates and calculates it's
-        Manhattan Distance (MD). In summary this takes the x and y deltas
-        and adds them together
-
-        Args:
-            x1, y1 (int): The first point
-            x2, y2 (int): The second point
-
-        Returns:
-            int: The Manhattan Distance between the points
-        """
-        return abs(x2-x1) + abs(y2-y1)
-
-
-    def is_hugging_right(self, robot:ToyRobot) -> bool:
-        """
-        Checks if this robot has a wall to it's right
-
-        Args:
-            robot (ToyRobot): The robot being checked
-
-        Returns:
-            bool: True if a wall is adjacent to the right side of the robot
-        """
-
-        self.robot_direction[robot.name] = (
-            self.robot_direction[robot.name] 
-            + 90
-        )%360
-        destination = self.get_destination(robot, self.cell_size)
-        hugging_right = (
-            self.obstacles.is_path_blocked(
-                *self.robot_pos[robot.name], 
-                *destination)
-            or not self.destination_in_bounds(destination)
-        )
-        self.robot_direction[robot.name] = (
-            self.robot_direction[robot.name] 
-            - 90
-        )%360   
-        return hugging_right
-
-
-    def right_hand_algorithm_iteration(self, robot:ToyRobot):
-        """
-        It does a single iteration of the right hand maze solving algorithm
-        on a specific robot, this entials hugging a wall in essence.
-
-        Args:
-            robot (ToyRobot): The robot controlled in this process
-        """
-        if not self.is_hugging_right(robot):
-            self.rotate_robot(robot, 90)
-            self.move_robot(robot, self.cell_size)
-            return
-            
-        if not self.move_robot(robot, self.cell_size):
-            self.rotate_robot(robot, 180)
-
-
-    def find_productive_path(
-        self, robot:ToyRobot, goal_pos:tuple):
-        """AI is creating summary for find_productive_path
-
-        Args:
-            robot (ToyRobot): The robot being used to solve the maze
-            goal_pos (tuple): The edge to go to
-
-        Returns:
-            tuple: The direction that gets closer to the edge 
-            and how far the new distance is. 
-            Returns false if no path has a smaller MD.
-        """
-        directions = [0,0,0,0]  # up, right, down, left
-        
-        for i in range(4):
-            destination = self.get_destination(robot, self.cell_size)
-            if (
-                not self.obstacles.is_path_blocked(
-                    *self.robot_pos[robot.name], 
-                    *destination)
-                and self.destination_in_bounds(destination)
-            ):
-                directions[i]  = self.find_manhattan_distance(
-                    *destination,*goal_pos
-                )
-            self.robot_direction[robot.name] = (
-                self.robot_direction[robot.name] 
-                + 90
-            )%360
-        
-        shortest = reduce(
-            lambda a,b : a if b>a else b,
-            filter(lambda x : x > 0, directions)
-        ) 
-
-        smallest_manhattan_distance = self.find_manhattan_distance(
-                    *self.robot_pos[robot.name],*goal_pos
-                )
-        if shortest < smallest_manhattan_distance and shortest > 0:
-            return shortest, directions.index(shortest)
-        else:
-            return False
-
-
-    def mazerun_slow(self, robot:ToyRobot, goal_pos:tuple):
-        """
-        Solves the maze by trying all paths with the turtle.
-
-        Args:
-            robot (ToyRobot): The robot to be moved around
-            goal_pos (tuple): The edge to land on
-        """
-        robot.messages_enabled = False
-        index = 0 if goal_pos[0] else 1
-        if index:
-            for x in range(
-                self.bounds_x[0]+1, self.bounds_x[1]-2, self.cell_size):
-                if not (x, goal_pos[1]) in self.obstacles:
-                    goal_pos = (x, goal_pos[1])
-                    break
-
-        else:
-            for y in range(
-                self.bounds_y[0]+1, self.bounds_y[1]-2, self.cell_size):
-                if not (goal_pos[0], y) in self.obstacles:
-                    goal_pos = (goal_pos[0], y)
-                    break
-        
-        lenience = range(
-            goal_pos[index]-self.cell_size+2, goal_pos[index]+self.cell_size-1)
-
-        smallest_manhattan_distance = self.find_manhattan_distance(
-            *self.robot_pos[robot.name],*goal_pos
-        )
-        while not self.robot_pos[robot.name][index] in lenience:
-            productive_path = self.find_productive_path(robot, goal_pos)
-            if productive_path:
-                self.rotate_robot(robot, 90*productive_path[1])
-                self.move_robot(robot, self.cell_size)
-                self.rotate_robot(robot, -90*productive_path[1])
-            else:
-                smallest_manhattan_distance = self.find_manhattan_distance(
-                    *self.robot_pos[robot.name],*goal_pos
-                )
-
-                rotation = - self.robot_direction[robot.name]
-                if index:
-                    if goal_pos[1] < 0:
-                        rotation -= 180
-                else:
-                    if goal_pos[0] < 0:
-                        rotation -= 90
-                    else:
-                        rotation += 90
-                rotation -= 90
-                self.rotate_robot(robot, rotation)
-                self.move_robot(robot, self.cell_size)
-                if self.robot_pos[robot.name][index] in lenience:
-                    break
-                while not (
-                    self.find_productive_path(robot, goal_pos) 
-                    and self.find_manhattan_distance(
-                        *self.robot_pos[robot.name]
-                        ,*goal_pos
-                    ) == smallest_manhattan_distance
-                ):
-                    if self.robot_pos[robot.name][index] in lenience:
-                        break
-                    self.right_hand_algorithm_iteration(robot)
-        robot.messages_enabled = True
-
-
-
     def explore_zeros(self, x:int, y:int):
         """
         Gives a number to all the items
@@ -433,20 +276,21 @@ class World():
             x (int): x co-ord of position
             y (int): y co-ord of position
         """
+            
         val = self.map_of_maze[x][y] 
-        if x > self.bounds_x[0] and not self.map_of_maze[x-1][y]:
+        if x > min(*self.map_of_maze.keys()) and not self.map_of_maze[x-1][y]:
             self.map_of_maze[x-1][y] = val + 1
             self.explore_zeros(x-1,y)
 
-        if x < self.bounds_x[1] and not self.map_of_maze[x+1][y]:
+        if x < max(*self.map_of_maze.keys()) and not self.map_of_maze[x+1][y]:
             self.map_of_maze[x+1][y] = val + 1
             self.explore_zeros(x+1,y)
 
-        if y > self.bounds_y[0] and not self.map_of_maze[x][y-1]:
+        if y > min(*self.map_of_maze[0].keys()) and not self.map_of_maze[x][y-1]:
             self.map_of_maze[x][y-1] = val + 1
             self.explore_zeros(x,y-1) 
 
-        if y < self.bounds_y[1] and not self.map_of_maze[x][y+1]:
+        if y < max(*self.map_of_maze[0].keys()) and not self.map_of_maze[x][y+1]:
             self.map_of_maze[x][y+1] = val + 1
             self.explore_zeros(x,y+1)
 
@@ -461,22 +305,27 @@ class World():
             y (int): y co-ord of position
         """
         val = self.map_of_maze[x][y]
+
+        if val == 2:
+            self.map_of_maze[x][y] = 0
+
         if val >= 3:
             val -= 1
-            if x > self.bounds_x[0] and self.map_of_maze[x-1][y] == val:
-                self.path.append((x-1,y))
+
+            if x > min(*self.map_of_maze.keys()) and self.map_of_maze[x-1][y] == val:
+                self.path.append(((x-1)*self.cell_size,y*self.cell_size))
                 self.backtrace(x-1,y)
 
-            elif x < self.bounds_x[1] and self.map_of_maze[x+1][y] == val:
-                self.path.append((x+1,y))
+            elif x < max(*self.map_of_maze.keys()) and self.map_of_maze[x+1][y] == val:
+                self.path.append(((x+1)*self.cell_size,y*self.cell_size))
                 self.backtrace(x+1,y)
 
-            elif y > self.bounds_y[0] and self.map_of_maze[x][y-1] == val:
-                self.path.append((x,y-1))
+            elif y > min(*self.map_of_maze[0].keys()) and self.map_of_maze[x][y-1] == val:
+                self.path.append((x*self.cell_size,(y-1)*self.cell_size))
                 self.backtrace(x,y-1)
 
-            elif y < self.bounds_y[1] and self.map_of_maze[x][y+1] == val:
-                self.path.append((x,y+1))
+            elif y < max(*self.map_of_maze[0].keys()) and self.map_of_maze[x][y+1] == val:
+                self.path.append((x*self.cell_size,(y+1)*self.cell_size))
                 self.backtrace(x,y+1)
 
 
@@ -488,47 +337,69 @@ class World():
             robot (ToyRobot): The robot to be moved around
             goal_pos (tuple): The edge to land on
         """
+        setrecursionlimit(10**5) 
+
         robot.robot_say_message(
             f"starting maze run..",
             f" > {robot.name} "
         )
-    
-        if self.bounds_x[1]*4*self.bounds_y[1] > 2500:
-            self.mazerun_slow(robot,goal_pos)
-            return True
-
-        self.map_of_maze = {
-            x : {
-                y : 1
-                if self.obstacles.is_position_blocked(x,y) else 0
-                for y in range(self.bounds_y[0], self.bounds_y[1]+1)
-            } 
-            for x in range(self.bounds_x[0], self.bounds_x[1]+1)}
-
-        self.map_of_maze[
-            self.robot_pos[robot.name][0]][
-            self.robot_pos[robot.name][1]
-        ] = 2
-
-        self.index = 0 if goal_pos[0] else 1
+        map_of_maze = dict()
+        for x, y in self.map_of_maze.items():
+            map_of_maze[x] = y.copy()
         
-        self.explore_zeros(*self.robot_pos[robot.name])
+        offset = -0.5
+        self.index = 0 if goal_pos[0] else 1
 
+        robot_x = int(self.robot_pos[robot.name][0]/self.cell_size-offset)
+        robot_y = int(self.robot_pos[robot.name][1]/self.cell_size-offset)
 
-        self.path = []
+        self.map_of_maze[robot_x][robot_y] = 2
+        try:
+            self.explore_zeros(robot_x, robot_y)
+        except Exception as e:
+            print(e)
+        
 
-        if not self.index:
-            for y in range(self.bounds_y[0], self.bounds_y[1]+1):
-                if self.map_of_maze[goal_pos[0]][y] > 1:
-                    self.backtrace(goal_pos[0],y)
-                    break
+        shortest_path = inf
+        shortest_path_co_ords = (robot_x, robot_y)
+            
+
+        if self.index:
+            y = min(*self.map_of_maze[0].keys()) if goal_pos[1]<0 else max(*self.map_of_maze[0].keys())
+            for x in self.map_of_maze.keys():
+                if self.map_of_maze[x][y] > 1:
+                    if shortest_path > self.map_of_maze[x][y]:
+                        shortest_path = self.map_of_maze[x][y]
+                        shortest_path_co_ords = x,y
         else:
-            for x in range(self.bounds_x[0], self.bounds_x[1]+1):
-                if self.map_of_maze[x][goal_pos[1]] > 1:
-                    self.backtrace(x,goal_pos[1])   
-                    break
-                    
+            x = min(*self.map_of_maze.keys()) if goal_pos[0]<0 else max(*self.map_of_maze.keys())
+            for y in self.map_of_maze[0].keys():
+                if self.map_of_maze[x][y] > 1:
+                    if shortest_path > self.map_of_maze[x][y]:
+                        shortest_path = self.map_of_maze[x][y]
+                        shortest_path_co_ords = x,y
+
+        self.path = list()
+        if shortest_path < inf:
+            self.backtrace(*shortest_path_co_ords)
+        else:
+            robot.robot_say_message(
+                f"Unable to solve to this edge, Sowwy ;w;",
+                f" > {robot.name} "
+            )
+
         self.path.reverse()
+
+        for pos in self.path:
+            self.robot_pos[robot.name] = pos
+
+        # print(*self.map_of_maze.items(), sep = '\n')
+            
+        self.map_of_maze = dict()
+        for x, y in map_of_maze.items():
+            self.map_of_maze[x] = y.copy()
+        
+        setrecursionlimit(10**3) 
 
 
     def enable_keys(self) -> None:
