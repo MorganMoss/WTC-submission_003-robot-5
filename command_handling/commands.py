@@ -1,4 +1,3 @@
-from tkinter import SEL
 from toy_robot import ToyRobot
 from world.text.world import World
 

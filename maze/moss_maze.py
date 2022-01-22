@@ -85,7 +85,7 @@ class Maze():
         Gets a list of obstacles
 
         Returns:
-            list[tuple(int,int)]: Obstacles object containing a list of obstacle objects
+            list[tuple(int,int)]: A list of co-ordinates representing obstacles
         """
         return list(self.maze)
        
@@ -177,6 +177,13 @@ class Maze():
 my_maze = None
 
 def generate_obstacles():
+    """
+    Gets a list of obstacles,
+    but you dont need to initialize an instance of this
+
+    Returns:
+        List[tuple[int,int]]: A list of co-ordinates representing obstacles
+    """
     global maze
     if maze != None:
         return maze.generate_obstacles()

@@ -1,4 +1,3 @@
-from typing import Iterable
 from .input_exceptions import InputError
 
 

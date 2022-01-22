@@ -19,9 +19,16 @@ class Maze():
         Gets a list of obstacles
 
         Returns:
-            Obstacles: Obstacles object containing a list of obstacle objects
+            Obstacles: A list of co-ordinates representing obstacles
         """
         return list(map(lambda co_ords : co_ords[0],self.maze))
 
 def generate_obstacles():
+    """
+    Gets a list of obstacles,
+    but you dont need to initialize an instance of this
+
+    Returns:
+        Obstacles: Obstacles object containing a list of obstacle objects
+    """
     return Maze().generate_obstacles()
