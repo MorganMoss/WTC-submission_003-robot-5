@@ -1,19 +1,19 @@
-# .vscode/*
-# !.vscode/settings.json
-# !.vscode/tasks.json
-# !.vscode/launch.json
-# !.vscode/extensions.json
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# __pycache__/
-# *.py[cod]
-# *$py.class
+__pycache__/
+*.py[cod]
+*$py.class
 
-# .venv
-# venv/
-# .vscode
+.venv
+venv/
+.vscode
 
-# obstacles.py
-# empty_maze.py
-# mazerunner.py
-# maze_run.py
-# __init__.py
+obstacles.py
+empty_maze.py
+mazerunner.py
+maze_run.py
+__init__.py
