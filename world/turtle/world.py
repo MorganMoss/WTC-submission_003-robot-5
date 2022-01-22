@@ -83,7 +83,7 @@ class TurtleWorld(World):
         self.robot_turtles[robot].penup()
         self.robot_turtles[robot].color("light blue")
         self.robot_turtles[robot].shapesize(self.cell_size/20*(self.scale-1)/self.cell_size)
-        self.robot_turtles[robot].goto(*start_pos)
+        self.robot_turtles[robot].goto(*self.robot_pos[robot.name])
         self.robot_turtles[robot].lt(90)
         self.robot_turtles[robot].pendown()
         self.robot_turtles[robot].showturtle()
@@ -189,19 +189,6 @@ class TurtleWorld(World):
         return b
 
 
-    def mazerun(self, robot: ToyRobot, goal_pos: tuple):
-        """
-        Solves the maze by mapping it out. This is faster.
-
-        Args:
-            robot (ToyRobot): The robot to be moved around
-            goal_pos (tuple): The edge to land on
-        """
-        if not super().mazerun(robot, goal_pos):
-            for pos in self.path:
-                self.robot_turtles[robot].goto(pos)
-                
-    
     def enable_keys(self) -> None:
         """
         Allows movement with arrowkeys

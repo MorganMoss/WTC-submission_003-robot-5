@@ -172,6 +172,13 @@ class Commands():
     
 
     def command_mazerun(self, edge:str = 'top') -> None:
+        """
+        This will get a solution to the maze and then run through it
+
+        Args:
+            edge (str, optional): The edge the robot will try go to.
+            Defaults to 'top'.
+        """
         if edge.lower() not in ["top", "bottom", "left", "right"]:
             self.robot.robot_say_message(
                 f"Sorry, I did not understand '{self.command_str}'.",
@@ -187,13 +194,58 @@ class Commands():
         except KeyError:
             self.robot.robot_say_message(
                 "That's not an edge. Choose from top, bottom, left and right.")
-        self.world.mazerun(self.robot, goal_pos)
+        path = self.world.mazerun(self.robot, goal_pos)
+
+        self.robot.robot_say_message(
+            f"starting maze run..",
+            f" > {self.robot.name} "
+        )
+
+        try:
+            self.world.screen.tracer(0)
+        except AttributeError:
+            ...
+
+        if len(path) > 50:
+            for pos in path:
+                self.world.robot_pos[self.robot.name] = pos
+                try:
+                    self.world.robot_turtles[self.robot].goto(pos)
+                except AttributeError:
+                    ...
+        else:
+            for pos in path:
+                if pos[1] == self.world.robot_pos[self.robot.name][1]:
+                    steps = pos[0] - self.world.robot_pos[self.robot.name][0]
+                    if steps > 0:
+                        while self.world.robot_direction[self.robot.name] != 90:
+                            self.command_turn_right()
+                    else:
+                        while self.world.robot_direction[self.robot.name] != 270:
+                            self.command_turn_left()
+                    self.command_forward(abs(steps))
+                
+                elif pos[0] == self.world.robot_pos[self.robot.name][0]:
+                    steps = pos[1] - self.world.robot_pos[self.robot.name][1]
+                    if steps > 0:
+                        while self.world.robot_direction[self.robot.name] != 0:
+                            self.command_turn_right()
+                    else:
+                        while self.world.robot_direction[self.robot.name] != 180:
+                            self.command_turn_left()
+                    self.command_forward(abs(steps))  
+
+        try:
+            self.world.screen.tracer(1)
+        except AttributeError:
+            ...
+
         self.robot.robot_say_message(
             f"I am at the {edge.lower()} edge.",
             f" > {self.robot.name} "
         )
         self.world.get_position(self.robot)
-        
+        # print(len(path))
         
 
     def command_off(self) -> None:

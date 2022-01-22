@@ -1,6 +1,7 @@
 from cmath import inf
 import math
 from modulefinder import Module
+import random
 from sys import setrecursionlimit
 from maze.obstacles import Obstacles
 from toy_robot import ToyRobot
@@ -22,14 +23,14 @@ class World():
 
         old_cell_size = self.cell_size
 
-        obstacles = maze.generate_obstacles()
+        self.maze = list(set(maze.generate_obstacles()))
+
         smallest = inf
         try :
             maze.my_maze
-            # print("worked")
         except AttributeError:
-            for obstacle_1 in obstacles:
-                for obstacle_2 in obstacles:
+            for obstacle_1 in self.maze:
+                for obstacle_2 in self.maze:
                     if obstacle_1 != obstacle_2:
                         if obstacle_1[1] == obstacle_2[1]:
                             smallest = min(smallest, abs(obstacle_1[0] - obstacle_2[0]))
@@ -43,13 +44,19 @@ class World():
         low_y = 0
         high_y = 0
 
-        for obstacle in obstacles:
+        for obstacle in self.maze:
+            if obstacle[0]%self.cell_size == 0:
+                obstacle =int(obstacle[0] + self.cell_size/2), obstacle[1]
+            if obstacle[1]%self.cell_size == 0:
+                obstacle =obstacle[0], int(obstacle[1] + self.cell_size/2)
+
             self.obstacles.add_obstacle(
                 obstacle, (obstacle[0] + self.cell_size, obstacle[1] + self.cell_size))
             low_x =  min(low_x, obstacle[0])
             high_x = max(high_x, obstacle[0]+ self.cell_size)
             low_y =  min(low_y, obstacle[1])
             high_y = max(high_y, obstacle[1]+ self.cell_size)
+
         if not(high_x < 10 or low_x > -10 or high_y < 10 or low_y > -10):
             self.bounds_x = (int(low_x), int(high_x))
             self.bounds_y = (int(low_y), int(high_y))
@@ -58,12 +65,24 @@ class World():
 
 
     def pixelate_obstacles(self, maze:Module):
-        obstacles = list(set(maze.generate_obstacles()))
-        obstacles = sorted(obstacles, key = lambda a : a[1])
-        obstacles = sorted(obstacles, key = lambda a : a[0])
+        """
+        This turns the maze into a 2d grid of 1's and 0's to make solving easier
+        Args:
+            maze (Module): The maze being used
+        """
+        self.maze = sorted(self.maze, key = lambda a : a[1])
+        self.maze = sorted(self.maze, key = lambda a : a[0])
         
+        for i in range(len(self.maze)):
+            if self.maze[i][0]%self.cell_size == 0:
+                self.maze[i] = int(self.maze[i][0] + self.cell_size/2), self.maze[i][1]
+            if self.maze[i][1]%self.cell_size == 0:
+                self.maze[i] = self.maze[i][0], int(self.maze[i][1] + self.cell_size/2)
+
         self.map_of_maze:dict = dict()
+
         offset = -0.5
+
         self.x_range = list(range(self.bounds_x[0], self.bounds_x[1], self.cell_size))
         self.x_range.reverse()
         self.y_range = range(self.bounds_y[0], self.bounds_y[1], self.cell_size)
@@ -71,7 +90,7 @@ class World():
         for x in self.x_range:
             self.map_of_maze[int((x/self.cell_size)-offset)] = dict()
             for y in self.y_range:
-                if (x,y) in obstacles:
+                if (x,y) in self.maze:
                     self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 1
                 else:
                     self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 0
@@ -149,7 +168,11 @@ class World():
             direction (float, optional):
             The direction the robot faces initially. Defaults to 0.
         """
-        
+        # while self.obstacles.is_position_blocked(*start_pos):
+        #     start_pos = (
+        #         int(random.randint(-5,5)*self.cell_size/2),
+        #         int(random.randint(-5,5)*self.cell_size/2)
+        #     )
         self.robot_pos[robot.name] = start_pos
         self.robot_direction[robot.name] = direction
 
@@ -339,10 +362,6 @@ class World():
         """
         setrecursionlimit(10**5) 
 
-        robot.robot_say_message(
-            f"starting maze run..",
-            f" > {robot.name} "
-        )
         map_of_maze = dict()
         for x, y in self.map_of_maze.items():
             map_of_maze[x] = y.copy()
@@ -390,16 +409,15 @@ class World():
 
         self.path.reverse()
 
-        for pos in self.path:
-            self.robot_pos[robot.name] = pos
-
-        # print(*self.map_of_maze.items(), sep = '\n')
+        self.path.append((shortest_path_co_ords[0]*self.cell_size, shortest_path_co_ords[1]*self.cell_size))
             
         self.map_of_maze = dict()
         for x, y in map_of_maze.items():
             self.map_of_maze[x] = y.copy()
         
         setrecursionlimit(10**3) 
+
+        return self.path
 
 
     def enable_keys(self) -> None:
