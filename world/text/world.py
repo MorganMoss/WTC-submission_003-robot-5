@@ -22,8 +22,8 @@ class World():
         """
 
         old_cell_size = self.cell_size
-
-        self.maze = list(set(maze.generate_obstacles()))
+        
+        self.maze = list(set(map(lambda item : tuple(item), maze.get_obstacles())))
 
         smallest = inf
         try :

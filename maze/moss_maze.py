@@ -25,6 +25,8 @@ Made by Morgan Moss
 
 import random
 
+from maze.obstacles import Obstacles
+
 maze = None
 
 class Maze():
@@ -36,7 +38,7 @@ class Maze():
         """
         Constructor for my Maze
         """
-
+        self.cell_size = cell_size
         self.maze:set = set()      
         self.path:list = []
         offset = cell_size/2
@@ -174,8 +176,13 @@ class Maze():
 
         self.carve_exits()
 
-my_maze = None
 
+"""
+The below is added to, hopefully, make others lives easier
+"""
+
+my_maze = None
+cell_size = 0
 def generate_obstacles():
     """
     Gets a list of obstacles,
@@ -184,8 +191,97 @@ def generate_obstacles():
     Returns:
         List[tuple[int,int]]: A list of co-ordinates representing obstacles
     """
-    global maze
+    global maze, cell_size
     if maze != None:
+        cell_size = maze.cell_size
         return maze.generate_obstacles()
     else:
+        cell_size = Maze().cell_size
         return Maze().generate_obstacles()
+
+obstacles = list(map(lambda tup : (tup, (tup[0] + cell_size, tup[1]+cell_size)),generate_obstacles()))
+
+
+def get_obstacles() -> list:
+        """
+        Get's this containers list of obstacles.
+
+        Returns:
+            list[Obstacle]: The list of obstacles in this container.
+        """
+        global obstacles
+        return list(map(lambda tup : tup[0], obstacles))
+
+
+def is_position_blocked(x,y) -> bool:
+    """
+    Checks if position in an obstacle.
+
+    Args:
+        x (int), y (int): 
+        the x and y co-ordinates of the new position.
+
+    Returns:
+        bool: False if move allowed
+    """
+    global obstacles
+    return  len(list(filter(
+        lambda obstacle :
+            obstacle[0][0] <= x <= obstacle[1][0] 
+            and 
+            obstacle[0][1] <= y <= obstacle[1][1]
+    , obstacles))) > 0
+
+
+def is_path_blocked( 
+    x1:int, y1:int,
+    x2:int, y2:int
+) -> bool:
+    """
+    Checks if there is an obstacle between the robot and it's destination.
+
+    Args:
+        x1 (int), y1 (int):
+        the x and y co-ordinates of the start position.
+        x2 (int), y2 (int):
+        the x and y co-ordinates of the end position.
+        
+    Returns:
+        bool: False is move is allowed
+    """
+    delta_x = x2 - x1
+    delta_y = y2 - y1
+
+    if delta_x != 0 and delta_y != 0: 
+        gradient =  delta_y/delta_x
+        constant = y1 - gradient*x1 
+        if delta_x >= delta_y:
+            x = (x1 if delta_x > 0 else x2)
+            for i in range(abs(delta_x)): #y = mx+c
+                y = gradient*x +constant
+                if is_position_blocked(x,y):
+                    return True
+                x += 1
+        else:
+            y = (y1 if delta_y > 0 else y2) 
+            for i in range(abs(delta_y)): # x = (y-c)/m
+                x = (y - constant)/gradient
+                if is_position_blocked(x,y):
+                    return True
+                y += 1
+
+    elif delta_x == 0: #i.e. x = c
+        x = x1
+        y = (y1 if delta_y > 0 else y2) 
+        for _ in range(abs(delta_y)):
+            if is_position_blocked(x,y):
+                    return True
+            y += 1
+    else: # delta_y == 0 i.e. y = c
+        x = (x1 if delta_x > 0 else x2)
+        y = y1
+        for _ in range(abs(delta_x)):
+            if is_position_blocked(x,y):
+                    return True
+            x += 1
+    return False

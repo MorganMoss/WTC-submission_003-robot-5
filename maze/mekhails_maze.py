@@ -94,8 +94,8 @@ def is_path_blocked(x1,y1,x2,y2):
 
     return False
 
-#just added default values
-def generate_obstacles(min_x=-260,min_y=-300):
+
+def draw_maze(min_x,min_y):
     global maze_coords,scale
 
     maze = [
@@ -105,13 +105,14 @@ def generate_obstacles(min_x=-260,min_y=-300):
     "XX  XX   XX X",
     "     XX X   X",
     "XX XXX    XXX",
-    "XX X XXX    X",
+    "XX X X X    X",
     "XX X     XXXX",
     "XX    X      ",
     "XX XX XXXXXXX",
     "XX XX      XX",
     "XX XX XXX XXX",
     "XX XXXXXX XXX",
+    "             "
 ]
     maze.reverse()
 
@@ -146,4 +147,3 @@ def clear_obj_coords():
     """
     global maze_coords
     maze_coords = []
-

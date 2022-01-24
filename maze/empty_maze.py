@@ -23,7 +23,7 @@ class Maze():
         """
         return list(map(lambda co_ords : co_ords[0],self.maze))
 
-def generate_obstacles():
+def get_obstacles():
     """
     Gets a list of obstacles,
     but you dont need to initialize an instance of this
