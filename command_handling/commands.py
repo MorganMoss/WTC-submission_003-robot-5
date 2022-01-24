@@ -201,12 +201,13 @@ class Commands():
             f" > {self.robot.name} "
         )
 
-        try:
-            self.world.screen.tracer(0)
-        except AttributeError:
-            ...
+        
 
-        if len(path) > 50:
+        if len(path) > 500:
+            try:
+                self.world.screen.tracer(0)
+            except AttributeError:
+                ...
             for pos in path:
                 self.world.robot_pos[self.robot.name] = pos
                 try:

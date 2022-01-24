@@ -1,7 +1,5 @@
 import random
 
-from maze.mekhails_maze import generate_obstacles
-
 '''
 Pranav 
 ⣿⣿⣿⣿⣿⣿⣿⡿⠛⠉⠉⠉⠉⠛⠻⣿⣿⠿⠛⠛⠙⠛⠻⣿⣿⣿⣿⣿⣿⣿
