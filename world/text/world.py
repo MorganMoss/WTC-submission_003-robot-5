@@ -1,7 +1,6 @@
 from cmath import inf
 import math
 from modulefinder import Module
-import random
 from sys import setrecursionlimit
 from maze.obstacles import Obstacles
 from toy_robot import ToyRobot
@@ -20,7 +19,6 @@ class World():
         Args:
             maze (Module): The maze being used
         """
-
         old_cell_size = self.cell_size
         
         self.maze = list(set(map(lambda item : tuple(item), maze.get_obstacles())))
@@ -38,6 +36,7 @@ class World():
                             smallest = min(smallest, abs(obstacle_1[1] - obstacle_2[1]))
             if smallest != inf:
                 self.cell_size = int(smallest)
+
 
         low_x = 0
         high_x = 0
@@ -360,7 +359,7 @@ class World():
             robot (ToyRobot): The robot to be moved around
             goal_pos (tuple): The edge to land on
         """
-        setrecursionlimit(10**5) 
+        setrecursionlimit(10**7) 
 
         map_of_maze = dict()
         for x, y in self.map_of_maze.items():

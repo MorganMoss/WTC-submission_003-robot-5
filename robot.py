@@ -12,12 +12,14 @@ else:
     from world.text.world import World
 
 for arg in sys.argv:
-    if "maze" in arg.lower():
+    if "maze" in arg.lower() or "tree" in arg.lower() or "obstacle" in arg.lower():
         try:
             Maze = importlib.import_module("."+arg, "maze")
             break
-        except:
+        except Exception as e:
             print("Import Failed! Using Empty Maze")
+            print(e)
+            raise SystemExit
     import maze.empty_maze as Maze
 
 # import maze.moss_maze as Maze
@@ -83,7 +85,7 @@ if __name__ == "__main__":
 
     if "--list" in sys.argv:
         mazes = os.listdir("./maze")
-        mazes = filter(lambda word : "maze" in word and ".py" in word, mazes )
+        mazes = filter(lambda word : "maze" in word or "tree" in word or "obstacle" in word and ".py" in word, mazes )
         mazes = map(lambda word : word.replace(".py", ''), mazes)
         print(*mazes, sep="\n")
         raise SystemExit

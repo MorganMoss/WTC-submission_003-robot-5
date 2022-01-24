@@ -183,7 +183,9 @@ The below is added to, hopefully, make others lives easier
 
 my_maze = None
 cell_size = 0
-def generate_obstacles():
+obstacles = None
+
+def get_obstacles() -> list:
     """
     Gets a list of obstacles,
     but you dont need to initialize an instance of this
@@ -191,26 +193,17 @@ def generate_obstacles():
     Returns:
         List[tuple[int,int]]: A list of co-ordinates representing obstacles
     """
-    global maze, cell_size
+    global maze, cell_size, obstacles
     if maze != None:
         cell_size = maze.cell_size
-        return maze.generate_obstacles()
+        obstacles = maze.generate_obstacles()
     else:
         cell_size = Maze().cell_size
-        return Maze().generate_obstacles()
+        obstacles = Maze().generate_obstacles()
 
-obstacles = list(map(lambda tup : (tup, (tup[0] + cell_size, tup[1]+cell_size)),generate_obstacles()))
-
-
-def get_obstacles() -> list:
-        """
-        Get's this containers list of obstacles.
-
-        Returns:
-            list[Obstacle]: The list of obstacles in this container.
-        """
-        global obstacles
-        return list(map(lambda tup : tup[0], obstacles))
+    obstacles_old = obstacles.copy()
+    obstacles = list(map(lambda tup : (tup, (tup[0] + cell_size, tup[1]+cell_size)), obstacles))
+    return obstacles_old
 
 
 def is_position_blocked(x,y) -> bool:
