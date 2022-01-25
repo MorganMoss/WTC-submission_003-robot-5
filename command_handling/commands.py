@@ -196,14 +196,15 @@ class Commands():
                 "That's not an edge. Choose from top, bottom, left and right.")
         path = self.world.mazerun(self.robot, goal_pos)
 
+        if not path:
+            return
+
         self.robot.robot_say_message(
             f"starting maze run..",
             f" > {self.robot.name} "
         )
 
-        
-
-        if len(path) > 500:
+        if len(path) > 50 :
             try:
                 self.world.screen.tracer(0)
             except AttributeError:

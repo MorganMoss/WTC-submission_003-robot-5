@@ -95,7 +95,7 @@ def is_path_blocked(x1,y1,x2,y2):
     return False
 
 
-def draw_maze(min_x,min_y):
+def get_obstacles(min_x=-260,min_y=-260):
     global maze_coords,scale
 
     maze = [

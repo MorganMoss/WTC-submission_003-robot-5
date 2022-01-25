@@ -7,3 +7,5 @@ venv/
 .vscode
 
 maze/.gitignore
+world/text/Alternate_Maze_Solver.txt
+world/text/failed_code.txt

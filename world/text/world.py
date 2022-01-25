@@ -21,7 +21,8 @@ class World():
         """
         old_cell_size = self.cell_size
         
-        self.maze = list(set(map(lambda item : tuple(item), maze.get_obstacles())))
+        self.maze = list(
+            set(map(lambda item : tuple(item), maze.get_obstacles())))
 
         smallest = inf
         try :
@@ -31,9 +32,11 @@ class World():
                 for obstacle_2 in self.maze:
                     if obstacle_1 != obstacle_2:
                         if obstacle_1[1] == obstacle_2[1]:
-                            smallest = min(smallest, abs(obstacle_1[0] - obstacle_2[0]))
+                            smallest = min(smallest, abs(
+                                obstacle_1[0] - obstacle_2[0]))
                         elif obstacle_1[0] == obstacle_2[0]:
-                            smallest = min(smallest, abs(obstacle_1[1] - obstacle_2[1]))
+                            smallest = min(smallest, abs(
+                                obstacle_1[1] - obstacle_2[1]))
             if smallest != inf:
                 self.cell_size = int(smallest)
 
@@ -50,7 +53,9 @@ class World():
                 obstacle =obstacle[0], int(obstacle[1] + self.cell_size/2)
 
             self.obstacles.add_obstacle(
-                obstacle, (obstacle[0] + self.cell_size, obstacle[1] + self.cell_size))
+                obstacle, (
+                    obstacle[0] + self.cell_size,
+                     obstacle[1] + self.cell_size))
             low_x =  min(low_x, obstacle[0])
             high_x = max(high_x, obstacle[0]+ self.cell_size)
             low_y =  min(low_y, obstacle[1])
@@ -74,25 +79,33 @@ class World():
         
         for i in range(len(self.maze)):
             if self.maze[i][0]%self.cell_size == 0:
-                self.maze[i] = int(self.maze[i][0] + self.cell_size/2), self.maze[i][1]
+                self.maze[i] = int(
+                    self.maze[i][0] + self.cell_size/2), self.maze[i][1]
             if self.maze[i][1]%self.cell_size == 0:
-                self.maze[i] = self.maze[i][0], int(self.maze[i][1] + self.cell_size/2)
+                self.maze[i] = self.maze[i][0], int(
+                    self.maze[i][1] + self.cell_size/2)
 
         self.map_of_maze:dict = dict()
 
         offset = -0.5
 
-        self.x_range = list(range(self.bounds_x[0], self.bounds_x[1], self.cell_size))
+        self.x_range = list(range(
+            self.bounds_x[0], self.bounds_x[1], self.cell_size))
         self.x_range.reverse()
-        self.y_range = range(self.bounds_y[0], self.bounds_y[1], self.cell_size)
+        self.y_range = range(
+            self.bounds_y[0], self.bounds_y[1], self.cell_size)
 
         for x in self.x_range:
             self.map_of_maze[int((x/self.cell_size)-offset)] = dict()
             for y in self.y_range:
                 if (x,y) in self.maze:
-                    self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 1
+                    self.map_of_maze[int(
+                        (x/self.cell_size)-offset)][int(
+                            (y/self.cell_size)-offset)] = 1
                 else:
-                    self.map_of_maze[int((x/self.cell_size)-offset)][int((y/self.cell_size)-offset)] = 0
+                    self.map_of_maze[int(
+                        (x/self.cell_size)-offset)][int(
+                            (y/self.cell_size)-offset)] = 0
 
 
     def __init__(
@@ -260,7 +273,9 @@ class World():
             )
             return False
 
-        if self.obstacles.is_path_blocked(*self.robot_pos[robot.name], *destination):
+        if self.obstacles.is_path_blocked(
+            *self.robot_pos[robot.name], *destination
+        ):
             robot.robot_say_message(
                 "Sorry, there is an obstacle in the way.",
                 f"{robot.name}: "
@@ -284,8 +299,8 @@ class World():
             robot (ToyRobot): The robot to display its position.
         """
         robot.robot_say_message(
-            f"now at position {str(self.robot_pos[robot.name]).replace(' ', '')}.",
-            f" > {robot.name} "
+        f"now at position {str(self.robot_pos[robot.name]).replace(' ', '')}.",
+        f" > {robot.name} "
         )
     
 
@@ -334,19 +349,27 @@ class World():
         if val >= 3:
             val -= 1
 
-            if x > min(*self.map_of_maze.keys()) and self.map_of_maze[x-1][y] == val:
+            if x > min(
+                *self.map_of_maze.keys()
+                ) and self.map_of_maze[x-1][y] == val:
                 self.path.append(((x-1)*self.cell_size,y*self.cell_size))
                 self.backtrace(x-1,y)
 
-            elif x < max(*self.map_of_maze.keys()) and self.map_of_maze[x+1][y] == val:
+            elif x < max(
+                *self.map_of_maze.keys()
+                ) and self.map_of_maze[x+1][y] == val:
                 self.path.append(((x+1)*self.cell_size,y*self.cell_size))
                 self.backtrace(x+1,y)
 
-            elif y > min(*self.map_of_maze[0].keys()) and self.map_of_maze[x][y-1] == val:
+            elif y > min(
+                *self.map_of_maze[0].keys()
+                ) and self.map_of_maze[x][y-1] == val:
                 self.path.append((x*self.cell_size,(y-1)*self.cell_size))
                 self.backtrace(x,y-1)
 
-            elif y < max(*self.map_of_maze[0].keys()) and self.map_of_maze[x][y+1] == val:
+            elif y < max(
+                *self.map_of_maze[0].keys()
+                ) and self.map_of_maze[x][y+1] == val:
                 self.path.append((x*self.cell_size,(y+1)*self.cell_size))
                 self.backtrace(x,y+1)
 
@@ -359,7 +382,7 @@ class World():
             robot (ToyRobot): The robot to be moved around
             goal_pos (tuple): The edge to land on
         """
-        setrecursionlimit(10**7) 
+        setrecursionlimit(10**8) #Change this if your maze is hard 
 
         map_of_maze = dict()
         for x, y in self.map_of_maze.items():
@@ -374,7 +397,7 @@ class World():
         self.map_of_maze[robot_x][robot_y] = 2
         try:
             self.explore_zeros(robot_x, robot_y)
-        except Exception as e:
+        except RecursionError as e:
             print(e)
         
 
@@ -383,14 +406,18 @@ class World():
             
 
         if self.index:
-            y = min(*self.map_of_maze[0].keys()) if goal_pos[1]<0 else max(*self.map_of_maze[0].keys())
+            y = min(
+                *self.map_of_maze[0].keys()
+                ) if goal_pos[1]<0 else max(*self.map_of_maze[0].keys())
             for x in self.map_of_maze.keys():
                 if self.map_of_maze[x][y] > 1:
                     if shortest_path > self.map_of_maze[x][y]:
                         shortest_path = self.map_of_maze[x][y]
                         shortest_path_co_ords = x,y
         else:
-            x = min(*self.map_of_maze.keys()) if goal_pos[0]<0 else max(*self.map_of_maze.keys())
+            x = min(
+                *self.map_of_maze.keys()
+                ) if goal_pos[0]<0 else max(*self.map_of_maze.keys())
             for y in self.map_of_maze[0].keys():
                 if self.map_of_maze[x][y] > 1:
                     if shortest_path > self.map_of_maze[x][y]:
@@ -405,10 +432,13 @@ class World():
                 f"Unable to solve to this edge, Sowwy ;w;",
                 f" > {robot.name} "
             )
+            return False
 
         self.path.reverse()
 
-        self.path.append((shortest_path_co_ords[0]*self.cell_size, shortest_path_co_ords[1]*self.cell_size))
+        self.path.append(
+            (shortest_path_co_ords[0]*self.cell_size,
+             shortest_path_co_ords[1]*self.cell_size))
             
         self.map_of_maze = dict()
         for x, y in map_of_maze.items():

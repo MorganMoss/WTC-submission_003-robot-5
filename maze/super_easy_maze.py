@@ -6,7 +6,7 @@ constraints_y =(-200,200)
 
 
 
-def get_obstacles(constraints_x, constraints_y):
+def get_obstacles():
     """Generates a random amount of obstacles for the game world
 
     Args:
