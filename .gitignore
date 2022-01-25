@@ -2,9 +2,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-.venv
-venv/
-.vscode
+# .venv
+# venv/
+# .vscode
 
 maze/.gitignore
 world/text/Alternate_Maze_Solver.txt
