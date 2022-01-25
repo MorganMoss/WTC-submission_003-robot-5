@@ -18,7 +18,6 @@ for arg in sys.argv:
             break
         except Exception as e:
             print(f"Import Failed! {e}")
-            # print(e)
             raise SystemExit
     import maze.empty_maze as Maze
 
@@ -96,7 +95,7 @@ if __name__ == "__main__":
     """ Add the following arguments to change how this program works:
         --help    : Shows how to add arguments to robot.py
         --list    : Lists the Mazes inside the maze directory you can use
-        <Integer> : To adjust the size of obstacles
+        <Integer> : To adjust the size of obstacles (Only if you use moss_maze)
         <maze>    : A word containing 'maze' - Trys to import custom maze with this filename
         turtle    : Program now uses turtle graphics instead of text"""
         )

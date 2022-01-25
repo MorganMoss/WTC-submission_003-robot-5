@@ -284,7 +284,9 @@ class Commands():
         command_arguments = rng.strip().split('-')
 
         history = list(
-            filter(lambda command: command[0:2] == [self.world, self.robot], self.history))
+            filter(
+                lambda command: 
+                    command[0:2] == [self.world, self.robot], self.history))
 
         h_size = len(history)
 
@@ -339,7 +341,9 @@ class Commands():
         }
 
         history = list(
-            filter(lambda command: command[0:2] == [self.world, self.robot], self.history))
+            filter(
+                lambda command: 
+                    command[0:2] == [self.world, self.robot], self.history))
         
         if len(args) > 0:
             if isinstance(args[0], str):
@@ -396,7 +400,7 @@ class Commands():
             for index ,command in enumerate(self.history):
                 if command [0:2] == [self.world,self.robot] :
                     self.robot.robot_say_message(
-                        f" {len(self.history) - index} > {' '.join(map(str,command[2:]))}"
+            f" {len(self.history) - index} > {' '.join(map(str,command[2:]))}"
                     )
 
 

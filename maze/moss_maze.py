@@ -202,7 +202,9 @@ def get_obstacles() -> list:
         obstacles = Maze().generate_obstacles()
 
     obstacles_old = obstacles.copy()
-    obstacles = list(map(lambda tup : (tup, (tup[0] + cell_size, tup[1]+cell_size)), obstacles))
+    obstacles = list(map(
+        lambda tup : (
+            tup, (tup[0] + cell_size, tup[1]+cell_size)), obstacles))
     return obstacles_old
 
 

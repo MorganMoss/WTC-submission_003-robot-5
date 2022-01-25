@@ -47,7 +47,8 @@ class Obstacles(set):
             self.add((pos, (pos[0]+4,pos[1]+4)))
 
 
-    def generate_obstacles(self, bounds_x:tuple=(-100,100), bounds_y:tuple=(-200, 200)) -> None:
+    def generate_obstacles(
+        self, bounds_x:tuple=(-100,100), bounds_y:tuple=(-200, 200)) -> None:
         """
         Generates up to 10 obstacles in random places within bounds
 

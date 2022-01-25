@@ -41,7 +41,8 @@ class TurtleWorld(World):
         self.screen = turtle.getscreen()
         self.screen.screensize(
             (self.bounds_x[1]-self.bounds_x[0])*self.scale/self.cell_size+1,
-            (self.bounds_y[1]-self.bounds_y[0])*self.scale/self.cell_size+self.cell_size*2
+            (self.bounds_y[1]-self.bounds_y[0])*self.scale/self.cell_size+
+            self.cell_size*2
         )
 
         self.screen.xscale=self.scale/self.cell_size
@@ -75,14 +76,17 @@ class TurtleWorld(World):
 
         Args:
             robot (ToyRobot): The robot to add
-            start_pos (tuple, optional): Position it starts at. Defaults to (0,0).
-            direction (float, optional): Direction it faces. Defaults to 0.
+            start_pos (tuple, optional): Position it starts at. 
+            Defaults to (0,0).
+            direction (float, optional): Direction it faces. 
+            Defaults to 0.
         """
         super().add_robot(robot, start_pos=start_pos, direction=direction)
         self.robot_turtles[robot] = turtle.Turtle(visible=False, shape='turtle')
         self.robot_turtles[robot].penup()
         self.robot_turtles[robot].color("light blue")
-        self.robot_turtles[robot].shapesize(self.cell_size/20*(self.scale-1)/self.cell_size)
+        self.robot_turtles[robot].shapesize(
+            self.cell_size/20*(self.scale-1)/self.cell_size)
         self.robot_turtles[robot].goto(*self.robot_pos[robot.name])
         self.robot_turtles[robot].lt(90)
         self.robot_turtles[robot].pendown()
